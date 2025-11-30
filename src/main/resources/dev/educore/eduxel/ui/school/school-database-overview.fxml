@@ -7,7 +7,8 @@
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="dev.educore.eduxel.ui.school.SchoolDatabaseOverviewController"
-            stylesheets="@../main/main-theme.css">
+            stylesheets="@../main/main-theme.css"
+            styleClass="school-root">
 
     <center>
         <SplitPane dividerPositions="0.25">
@@ -23,32 +24,43 @@
                         <Label text="Schüler nach Klasse sortiert, plus Lehrer" styleClass="activity-subtitle"/>
                     </HBox>
 
-                    <TitledPane text="Schüler" expanded="true">
+                    <TitledPane text="Schüler" expanded="true" styleClass="card-pane">
                         <content>
-                            <TableView fx:id="studentTable" prefHeight="200.0">
+                            <TableView fx:id="studentTable"
+                                       styleClass="school-table"
+                                       prefHeight="200.0">
+
                                 <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                                 </columnResizePolicy>
+
                                 <columns>
                                     <TableColumn fx:id="colStudentClass" text="Klasse" minWidth="120"/>
                                     <TableColumn fx:id="colStudentLast" text="Nachname" minWidth="140"/>
                                     <TableColumn fx:id="colStudentFirst" text="Vorname" minWidth="140"/>
                                 </columns>
+
                             </TableView>
                         </content>
                     </TitledPane>
 
-                    <TitledPane text="Lehrer" expanded="true">
+
+                    <TitledPane text="Lehrer" expanded="true" styleClass="card-pane">
                         <content>
-                            <TableView fx:id="teacherTable" prefHeight="160.0">
+                            <TableView fx:id="teacherTable"
+                                       styleClass="school-table"
+                                       prefHeight="160.0">
+
                                 <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                                 </columnResizePolicy>
+
                                 <columns>
                                     <TableColumn fx:id="colTeacherLast" text="Nachname" minWidth="140"/>
                                     <TableColumn fx:id="colTeacherFirst" text="Vorname" minWidth="140"/>
                                     <TableColumn fx:id="colTeacherSubject" text="Fach" minWidth="140"/>
                                 </columns>
+
                             </TableView>
                         </content>
                     </TitledPane>

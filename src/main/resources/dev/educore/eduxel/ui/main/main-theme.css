@@ -16,7 +16,7 @@
     -fx-pref-width: 34;
     -fx-pref-height: 34;
     -fx-background-radius: 999;
-    -fx-background-color: linear-gradient(to bottom right, #4c6fff, #7b5cff);
+    -fx-background-color: transparent;
     -fx-alignment: CENTER;
 }
 
@@ -142,9 +142,6 @@
 .nav-icon-laptop {
     -fx-pref-width: 22;
 }
-.nav-item-inventory {
-    -fx-translate-x: -3;   /* ggf. -2 oder -4 probieren */
-}
 
 
 .nav-item-selected .nav-icon-label {
@@ -154,6 +151,15 @@
 .nav-item-selected .nav-caption {
     -fx-text-fill: #6b7280;
 }
+
+.nav-item-inventory {
+    -fx-translate-x: -3;
+}
+
+.nav-item-school {
+    -fx-translate-x: -2;  /* ggf. -1 oder -3 testen */
+}
+
 
 .side-footer {
     -fx-text-fill: #9ca3af;
@@ -335,7 +341,7 @@
     -fx-border-color: #c7bfff;
 }
 
-/* TitledPane als „weiße Karten“ um Tabellen herum */
+
 .titled-pane {
     -fx-background-color: transparent;
     -fx-text-fill: #111827;
@@ -359,7 +365,7 @@
     -fx-padding: 12 14 14 14;
 }
 
-/* ListView — weiße Karte, rund und leicht */
+
 .list-view {
     -fx-background-color: white;
     -fx-background-insets: 0;
@@ -388,13 +394,20 @@
     -fx-text-fill: #9ca3af;
 }
 
-/* SplitPane — schlanker, heller Divider */
-.split-pane > .split-pane-divider {
-    -fx-padding: 0.25em; /* dünn */
-    -fx-background-color: rgba(17,24,39,0.04);
+/* SplitPane-Teiler in der Schuldatenbank – dünne, dezente Linie */
+.school-root .split-pane > .split-pane-divider {
+    -fx-padding: 0;  /* macht den Divider richtig schlank */
+    -fx-background-color: transparent, rgba(148,163,184,0.18); /* slate-400-ish */
+    -fx-background-insets: 0, 0 1 0 1;  /* 1px Linie in der Mitte */
+    -fx-background-radius: 0;
 }
 
-/* Scrollbars — hell und rund */
+/* leichte Hervorhebung beim Drag/Hover */
+.school-root .split-pane > .split-pane-divider:hover {
+    -fx-background-color: transparent, rgba(129,140,248,0.35); /* indigo-400 */
+}
+
+
 .scroll-bar:vertical, .scroll-bar:horizontal {
     -fx-background-color: transparent;
 }
@@ -412,4 +425,203 @@
 
 .scroll-bar .thumb:hover {
     -fx-background-color: rgba(17,24,39,0.24);
+}
+.text-field,
+.password-field {
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13;
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: #9ca3af;
+    -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.04), 8, 0.2, 0, 2);
+}
+
+.text-field:hover,
+.password-field:hover {
+    -fx-border-color: #d1d5db;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-background-color: rgba(255,255,255,1);
+    -fx-border-color: #4f46e5;
+    -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.18), 10, 0.25, 0, 3);
+}
+
+.text-field:disabled,
+.password-field:disabled {
+    -fx-opacity: 0.65;
+}
+
+.dialog-pane {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 18;
+    -fx-padding: 20 22 18 22;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.18), 18, 0.22, 0, 6);
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 12 0;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: #111827;
+    -fx-font-size: 15;
+    -fx-font-weight: 700;
+}
+
+.dialog-pane .content {
+    -fx-padding: 0 0 12 0;
+}
+
+.dialog-pane .content .label {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 12;
+}
+
+.dialog-pane .graphic-container {
+    -fx-padding: 0 10 0 0;
+}
+
+.dialog-pane .graphic-container .label {
+    -fx-font-size: 20;
+}
+
+.dialog-pane .button-bar > .container {
+    -fx-padding: 10 0 0 0;
+    -fx-spacing: 8;
+}
+
+.dialog-pane .button {
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-font-size: 12;
+    -fx-font-weight: 600;
+    -fx-padding: 6 16 6 16;
+}
+
+.dialog-pane .button.cancel,
+.dialog-pane .button:default:cancel {
+    -fx-background-color: #f3f4ff;
+    -fx-text-fill: #4f46e5;
+    -fx-border-color: #e0e7ff;
+    -fx-border-width: 1;
+}
+
+.dialog-pane .button.cancel:hover,
+.dialog-pane .button:default:cancel:hover {
+    -fx-background-color: #e0e7ff;
+}
+
+.dialog-pane .button:default {
+    -fx-background-color: linear-gradient(to right, #4f46e5, #6366f1);
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.35), 12, 0.3, 0, 4);
+}
+
+.dialog-pane .button:default:hover {
+    -fx-background-color: linear-gradient(to right, #4338ca, #4f46e5);
+}
+
+/* === Schuldatenbank-Tabellen – clean, ohne zweite Karte ============= */
+
+.school-table {
+    -fx-background-color: transparent !important;
+    -fx-background-insets: 0 !important;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+    -fx-border-radius: 0 !important;
+    -fx-background-radius: 0 !important;
+    -fx-table-cell-border-color: transparent;
+    -fx-effect: null; /* killt den globalen Dropshadow der .table-view */
+}
+
+/* Header-Leiste oben */
+.school-table .column-header-background {
+    -fx-background-color: white !important;     /* gleiche Farbe wie Card */
+    -fx-background-insets: 0 !important;
+    -fx-background-radius: 8 8 0 0 !important;
+    -fx-border-color: rgba(17,24,39,0.06) !important;
+    -fx-border-width: 0 0 1 0 !important;
+}
+
+/* einzelne Header-Zellen */
+.school-table .column-header {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-size: 30;
+}
+
+.school-table .column-header .label {
+    -fx-text-fill: #111827;
+    -fx-font-weight: 600;
+    -fx-font-size: 12;
+}
+
+/* Filler rechts von den Spalten */
+.school-table .filler {
+    -fx-background-color: white !important;
+    -fx-background-insets: 0 !important;
+}
+
+/* normale Zellen */
+.school-table .table-cell {
+    -fx-padding: 10 14;
+    -fx-text-fill: #111827;
+    -fx-background-color: transparent;
+}
+
+/* Zebra + Selection */
+.school-table > .virtual-flow > .clipped-container > .sheet > .table-row-cell:odd {
+    -fx-background-color: rgba(249, 250, 251, 0.5);
+}
+
+.school-table > .virtual-flow > .clipped-container > .sheet > .table-row-cell:selected {
+    -fx-background-color: rgba(99, 102, 241, 0.12);
+}
+
+.school-table .placeholder .label {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 12;
+}
+
+/* Card-Rahmen für die Schuldatenbank-Panels selbst */
+.card-pane {
+    -fx-background-color: transparent;
+}
+
+.card-pane > .title {
+    -fx-background-color: white;
+    -fx-background-radius: 18 18 0 0;
+    -fx-border-color: rgba(17,24,39,0.06);
+    -fx-border-width: 1 1 0 1;
+    -fx-border-radius: 18 18 0 0;
+    -fx-padding: 10 18 10 18;
+}
+
+.card-pane > *.content {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 18 18;
+    -fx-border-color: rgba(17,24,39,0.06);
+    -fx-border-width: 0 1 1 1;
+    -fx-border-radius: 0 0 18 18;
+    -fx-padding: 12 16 16 16;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.06), 14, 0.16, 0, 5);
+}
+
+.school-root {
+    -fx-background-color: transparent;
+}
+
+/* SplitPane in der Mitte auch durchsichtig halten */
+.school-root .split-pane {
+    -fx-background-color: transparent;
 }

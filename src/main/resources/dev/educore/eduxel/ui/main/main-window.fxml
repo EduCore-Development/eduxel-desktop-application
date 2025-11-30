@@ -4,6 +4,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <BorderPane fx:id="root"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -15,7 +17,11 @@
         <HBox spacing="16" styleClass="top-bar">
             <HBox spacing="16" alignment="CENTER_LEFT">
                 <StackPane styleClass="app-avatar">
-                    <Label text="E" styleClass="app-avatar-text"/>
+                        <ImageView fitWidth="34" fitHeight="34" preserveRatio="true">
+                            <image>
+                                <Image url="@logo.png"/>
+                            </image>
+                        </ImageView>
                 </StackPane>
                 <VBox spacing="2">
                     <Label fx:id="titleLabel" styleClass="app-title"/>
@@ -42,7 +48,7 @@
 
             <VBox fx:id="navSchoolButton"
                   onMouseClicked="#onNavSchoolClicked"
-                  styleClass="nav-item">
+                  styleClass="nav-item nav-item-school">
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
                     <StackPane styleClass="nav-icon-wrapper">
                         <Label text="📚" styleClass="nav-icon-label"/>
@@ -53,6 +59,7 @@
                     </VBox>
                 </HBox>
             </VBox>
+
 
             <VBox fx:id="navInventoryButton"
                   onMouseClicked="#onNavInventoryClicked"

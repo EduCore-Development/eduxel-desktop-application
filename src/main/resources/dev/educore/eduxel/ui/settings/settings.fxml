@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -26,27 +27,66 @@
                     <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
 
-                <Label text="Server‑IP/Host" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <TextField fx:id="hostField" promptText="z. B. 192.168.1.10 oder server.schule.de"
-                          GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <Label text="Server-IP/Host" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="hostField"
+                           promptText="z. B. 192.168.1.10 oder server.schule.de"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
                 <Label text="Port" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <TextField fx:id="portField" promptText="45821" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <TextField fx:id="portField"
+                           promptText="45821"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
                 <Label text="Secret" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <PasswordField fx:id="secretField" promptText="Secret"
+                <PasswordField fx:id="secretField"
+                               promptText="Secret"
                                GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                <HBox spacing="8" alignment="CENTER_LEFT" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2">
-                    <ProgressIndicator fx:id="progress" visible="false" prefWidth="18" prefHeight="18"/>
+                <HBox spacing="8"
+                      alignment="CENTER_LEFT"
+                      GridPane.rowIndex="3"
+                      GridPane.columnIndex="0"
+                      GridPane.columnSpan="2">
+                    <ProgressIndicator fx:id="progress"
+                                       visible="false"
+                                       prefWidth="18"
+                                       prefHeight="18"/>
                     <Label fx:id="statusLabel" text=""/>
                 </HBox>
             </GridPane>
 
             <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button text="Verbindung testen" onAction="#onTestConnection" styleClass="pill-button"/>
-                <Button fx:id="saveButton" text="Speichern" onAction="#onSave" styleClass="primary-button"/>
+                <Button text="Verbindung testen"
+                        onAction="#onTestConnection"
+                        styleClass="pill-button"/>
+                <Button fx:id="saveButton"
+                        text="Speichern"
+                        onAction="#onSave"
+                        styleClass="primary-button"/>
             </HBox>
+
+            <Separator/>
+
+            <VBox spacing="6">
+                <Label text="Build-Informationen" styleClass="activity-subtitle"/>
+                <Label fx:id="buildInfoLabel"/>
+
+                <HBox spacing="12">
+                    <Hyperlink onAction="#onOpenBugReport">
+                        <graphic>
+                            <FontIcon iconLiteral="mdi2b-bug-outline" iconSize="14"/>
+                        </graphic>
+                        <text>Bug melden</text>
+                    </Hyperlink>
+
+                    <Hyperlink onAction="#onOpenGithub">
+                        <graphic>
+                            <FontIcon iconLiteral="mdi2b-book-open-outline" iconSize="14"/>
+                        </graphic>
+                        <text>GitHub öffnen</text>
+                    </Hyperlink>
+                </HBox>
+            </VBox>
         </VBox>
     </center>
 

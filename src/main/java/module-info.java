@@ -4,6 +4,7 @@ module dev.educore.eduxel {
     requires javafx.graphics;
     requires java.sql;
     requires java.prefs;
+    requires java.desktop;
 
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.materialdesign2;
