@@ -3,14 +3,16 @@ module dev.educore.eduxel {
     requires javafx.fxml;
     requires javafx.graphics;
     requires java.sql;
+    requires java.prefs;
 
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.materialdesign2;
 
     opens dev.educore.eduxel.app to javafx.graphics;
-    opens dev.educore.eduxel.ui.main to javafx.fxml;
-    opens dev.educore.eduxel.ui.school to javafx.fxml;
+    opens dev.educore.eduxel.ui.main to javafx.fxml, javafx.base;
+    opens dev.educore.eduxel.ui.school to javafx.fxml, javafx.base;
     opens dev.educore.eduxel.ui.inventory to javafx.fxml;
+    opens dev.educore.eduxel.ui.settings to javafx.fxml;
 
     exports dev.educore.eduxel.app;
     exports dev.educore.eduxel.meta;

@@ -116,9 +116,31 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        
+        <!-- MariaDB JDBC driver for database connectivity -->
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.4.1</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <!-- Include assets (e.g., logo.png) stored beside Java sources -->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>dev/educore/eduxel/assets/**/*.png</include>
+                    <include>dev/educore/eduxel/assets/**/*.jpg</include>
+                    <include>dev/educore/eduxel/assets/**/*.jpeg</include>
+                    <include>dev/educore/eduxel/assets/**/*.gif</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

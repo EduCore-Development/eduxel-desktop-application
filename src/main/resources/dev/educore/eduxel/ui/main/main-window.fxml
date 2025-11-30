@@ -42,7 +42,7 @@
 
             <VBox fx:id="navSchoolButton"
                   onMouseClicked="#onNavSchoolClicked"
-                  styleClass="nav-item nav-item-selected">
+                  styleClass="nav-item">
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
                     <StackPane styleClass="nav-icon-wrapper">
                         <Label text="📚" styleClass="nav-icon-label"/>
@@ -68,7 +68,7 @@
 
             <VBox fx:id="navSettingsButton"
                   onMouseClicked="#onNavSettingsClicked"
-                  styleClass="nav-item nav-item-secondary">
+                  styleClass="nav-item nav-item-selected nav-item-secondary">
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
                     <StackPane styleClass="nav-icon-wrapper">
                         <Label text="⚙" styleClass="nav-icon-label"/>
@@ -91,13 +91,17 @@
                            styleClass="quick-action"
                            onAction="#onQuickCreateStudent"/>
 
-                <Hyperlink text="Gerät zuweisen"
+                <Hyperlink text="Neuen Lehrer anlegen"
                            styleClass="quick-action"
-                           onAction="#onQuickAssignDevice"/>
+                           onAction="#onQuickCreateTeacher"/>
 
-                <Hyperlink text="Klassenübersicht öffnen"
+                <Hyperlink text="Neue Klasse anlegen"
                            styleClass="quick-action"
-                           onAction="#onQuickOpenClasses"/>
+                           onAction="#onQuickCreateClass"/>
+
+                <Hyperlink text="Neues Gerät anlegen"
+                           styleClass="quick-action"
+                           onAction="#onQuickCreateDevice"/>
             </VBox>
 
             <Label text="EduCore Development"
@@ -106,34 +110,8 @@
     </left>
 
     <center>
-        <VBox styleClass="content-area" spacing="18">
-            <BorderPane.margin>
-                <Insets top="24.0" right="0.0" bottom="0.0" left="0.0"/>
-            </BorderPane.margin>
-
-            <!-- Make the activity table take the full width and grow vertically -->
-            <VBox spacing="10" styleClass="activity-card" VBox.vgrow="ALWAYS">
-                <HBox alignment="CENTER_LEFT" spacing="8">
-                    <Label text="Letzte Aktivitäten" styleClass="activity-title"/>
-                    <Label text="Live aus der Schuldatenbank und Inventar"
-                           styleClass="activity-subtitle"/>
-                </HBox>
-
-                <!-- Make columns resize with the window: use constrained resize policy -->
-                <TableView fx:id="activityTable" VBox.vgrow="ALWAYS">
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                    </columnResizePolicy>
-                    <columns>
-                        <!-- Use computed sizes so the constrained policy can distribute width dynamically -->
-                        <TableColumn text="Zeit" prefWidth="-1.0" minWidth="100.0"/>
-                        <TableColumn text="Bereich" prefWidth="-1.0" minWidth="100.0"/>
-                        <TableColumn text="Aktion" prefWidth="-1.0" minWidth="150.0"/>
-                        <TableColumn text="Benutzer" prefWidth="-1.0" minWidth="100.0"/>
-                    </columns>
-                </TableView>
-            </VBox>
-        </VBox>
+        <!-- Inhalt wird per NavigationManager gesetzt (Standard: Einstellungen) -->
+        <StackPane />
     </center>
 
 </BorderPane>

@@ -19,6 +19,10 @@ public final class NavigationManager {
         setCenter("/dev/educore/eduxel/ui/school/student-overview.fxml");
     }
 
+    public static void showSchoolDatabaseOverview() {
+        setCenter("/dev/educore/eduxel/ui/school/school-database-overview.fxml");
+    }
+
     public static void showInventoryOverview() {
         setCenter("/dev/educore/eduxel/ui/inventory/inventory-overview.fxml");
     }
