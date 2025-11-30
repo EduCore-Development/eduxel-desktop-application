@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane fx:id="root"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="dev.educore.eduxel.ui.main.MainWindowController"
+            stylesheets="@main-theme.css"
+            styleClass="root-pane">
+
+    <top>
+        <HBox spacing="16" styleClass="top-bar">
+            <HBox spacing="16" alignment="CENTER_LEFT">
+                <StackPane styleClass="app-avatar">
+                    <Label text="E" styleClass="app-avatar-text"/>
+                </StackPane>
+                <VBox spacing="2">
+                    <Label fx:id="titleLabel" styleClass="app-title"/>
+                    <Label fx:id="versionLabel" styleClass="app-version"/>
+                </VBox>
+            </HBox>
+
+            <Pane HBox.hgrow="ALWAYS"/>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Label text="Eduxel Schulmanagement" styleClass="app-subtitle"/>
+                <Button text="Demo-Session" styleClass="pill-button"/>
+            </HBox>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox spacing="12" styleClass="side-bar">
+            <BorderPane.margin>
+                <Insets top="24.0" right="0.0" bottom="0.0" left="0.0"/>
+            </BorderPane.margin>
+
+            <Label text="Bereiche" styleClass="side-title"/>
+
+            <VBox fx:id="navSchoolButton"
+                  onMouseClicked="#onNavSchoolClicked"
+                  styleClass="nav-item nav-item-selected">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
+                    <StackPane styleClass="nav-icon-wrapper">
+                        <Label text="📚" styleClass="nav-icon-label"/>
+                    </StackPane>
+                    <VBox spacing="2">
+                        <Label text="Schuldatenbank" styleClass="nav-label"/>
+                        <Label text="Schüler, Klassen, Lehrer" styleClass="nav-caption"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <VBox fx:id="navInventoryButton"
+                  onMouseClicked="#onNavInventoryClicked"
+                  styleClass="nav-item nav-item-inventory">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="💻" styleClass="nav-icon-label"/>
+                    <VBox spacing="2">
+                        <Label text="Inventar" styleClass="nav-label"/>
+                        <Label text="Geräte, Zuweisungen" styleClass="nav-caption"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+
+
+            <VBox fx:id="navSettingsButton"
+                  onMouseClicked="#onNavSettingsClicked"
+                  styleClass="nav-item nav-item-secondary">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
+                    <StackPane styleClass="nav-icon-wrapper">
+                        <Label text="⚙" styleClass="nav-icon-label"/>
+                    </StackPane>
+                    <VBox spacing="2">
+                        <Label text="Einstellungen" styleClass="nav-label"/>
+                        <Label text="System &amp; Layout" styleClass="nav-caption"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <Pane VBox.vgrow="ALWAYS"/>
+
+            <Label text="EduCore Development"
+                   styleClass="side-footer"/>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox styleClass="content-area" spacing="18">
+            <BorderPane.margin>
+                <Insets top="24.0" right="0.0" bottom="0.0" left="0.0"/>
+            </BorderPane.margin>
+
+            <HBox spacing="18">
+                <VBox spacing="10"
+                      styleClass="activity-card"
+                      HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="Letzte Aktivitäten" styleClass="activity-title"/>
+                        <Label text="Live aus der Schuldatenbank und Inventar"
+                               styleClass="activity-subtitle"/>
+                    </HBox>
+
+                    <TableView fx:id="activityTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn text="Zeit" prefWidth="130.0"/>
+                            <TableColumn text="Bereich" prefWidth="120.0"/>
+                            <TableColumn text="Aktion" prefWidth="220.0"/>
+                            <TableColumn text="Benutzer" prefWidth="120.0"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <VBox spacing="12"
+                      styleClass="quick-card">
+                    <Label text="Schnellzugriffe" styleClass="quick-title"/>
+
+                    <Button text="Neuen Schüler anlegen"
+                            styleClass="quick-button-primary"
+                            onAction="#onQuickCreateStudent"/>
+
+                    <Button text="Gerät zuweisen"
+                            styleClass="quick-button-secondary"
+                            onAction="#onQuickAssignDevice"/>
+
+                    <Button text="Klassenübersicht öffnen"
+                            styleClass="quick-button-secondary"
+                            onAction="#onQuickOpenClasses"/>
+
+                    <Separator/>
+
+                    <Pane VBox.vgrow="ALWAYS"/>
+
+                    <Label text="Tip: Mit Eduxel bleiben Geräte und Schülerdaten immer synchron."
+                           wrapText="true"
+                           styleClass="quick-hint"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
