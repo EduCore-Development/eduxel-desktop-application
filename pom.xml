@@ -135,8 +135,8 @@
                 <version>0.0.8</version>
 
                 <configuration>
-                    <!-- Modulname / MainClass -->
-                    <mainClass>dev.educore.eduxel/dev.educore.eduxel.app.EduxelApp</mainClass>
+                    <!-- Modular application main (module/name) -->
+                    <mainClass>dev.educore.eduxel/dev.educore.eduxel.app.EduxelLauncher</mainClass>
                 </configuration>
             </plugin>
 

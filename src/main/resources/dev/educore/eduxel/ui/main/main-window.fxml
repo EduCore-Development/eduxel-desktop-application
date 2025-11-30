@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 
 <BorderPane fx:id="root"
-            xmlns="http://javafx.com/javafx/17"
+            xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="dev.educore.eduxel.ui.main.MainWindowController"
             stylesheets="@main-theme.css"
@@ -66,8 +66,6 @@
                 </HBox>
             </VBox>
 
-
-
             <VBox fx:id="navSettingsButton"
                   onMouseClicked="#onNavSettingsClicked"
                   styleClass="nav-item nav-item-secondary">
@@ -82,7 +80,25 @@
                 </HBox>
             </VBox>
 
+            <!-- Spacer pushes quick actions to the red area at the bottom -->
             <Pane VBox.vgrow="ALWAYS"/>
+
+            <!-- Quick actions -->
+            <VBox spacing="8" styleClass="quick-actions">
+                <Label text="Schnellzugriffe" styleClass="side-title"/>
+
+                <Hyperlink text="Neuen Schüler anlegen"
+                           styleClass="quick-action"
+                           onAction="#onQuickCreateStudent"/>
+
+                <Hyperlink text="Gerät zuweisen"
+                           styleClass="quick-action"
+                           onAction="#onQuickAssignDevice"/>
+
+                <Hyperlink text="Klassenübersicht öffnen"
+                           styleClass="quick-action"
+                           onAction="#onQuickOpenClasses"/>
+            </VBox>
 
             <Label text="EduCore Development"
                    styleClass="side-footer"/>
@@ -95,51 +111,28 @@
                 <Insets top="24.0" right="0.0" bottom="0.0" left="0.0"/>
             </BorderPane.margin>
 
-            <HBox spacing="18">
-                <VBox spacing="10"
-                      styleClass="activity-card"
-                      HBox.hgrow="ALWAYS">
-                    <HBox alignment="CENTER_LEFT" spacing="8">
-                        <Label text="Letzte Aktivitäten" styleClass="activity-title"/>
-                        <Label text="Live aus der Schuldatenbank und Inventar"
-                               styleClass="activity-subtitle"/>
-                    </HBox>
+            <!-- Make the activity table take the full width and grow vertically -->
+            <VBox spacing="10" styleClass="activity-card" VBox.vgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="Letzte Aktivitäten" styleClass="activity-title"/>
+                    <Label text="Live aus der Schuldatenbank und Inventar"
+                           styleClass="activity-subtitle"/>
+                </HBox>
 
-                    <TableView fx:id="activityTable" VBox.vgrow="ALWAYS">
-                        <columns>
-                            <TableColumn text="Zeit" prefWidth="130.0"/>
-                            <TableColumn text="Bereich" prefWidth="120.0"/>
-                            <TableColumn text="Aktion" prefWidth="220.0"/>
-                            <TableColumn text="Benutzer" prefWidth="120.0"/>
-                        </columns>
-                    </TableView>
-                </VBox>
-
-                <VBox spacing="12"
-                      styleClass="quick-card">
-                    <Label text="Schnellzugriffe" styleClass="quick-title"/>
-
-                    <Button text="Neuen Schüler anlegen"
-                            styleClass="quick-button-primary"
-                            onAction="#onQuickCreateStudent"/>
-
-                    <Button text="Gerät zuweisen"
-                            styleClass="quick-button-secondary"
-                            onAction="#onQuickAssignDevice"/>
-
-                    <Button text="Klassenübersicht öffnen"
-                            styleClass="quick-button-secondary"
-                            onAction="#onQuickOpenClasses"/>
-
-                    <Separator/>
-
-                    <Pane VBox.vgrow="ALWAYS"/>
-
-                    <Label text="Tip: Mit Eduxel bleiben Geräte und Schülerdaten immer synchron."
-                           wrapText="true"
-                           styleClass="quick-hint"/>
-                </VBox>
-            </HBox>
+                <!-- Make columns resize with the window: use constrained resize policy -->
+                <TableView fx:id="activityTable" VBox.vgrow="ALWAYS">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                    <columns>
+                        <!-- Use computed sizes so the constrained policy can distribute width dynamically -->
+                        <TableColumn text="Zeit" prefWidth="-1.0" minWidth="100.0"/>
+                        <TableColumn text="Bereich" prefWidth="-1.0" minWidth="100.0"/>
+                        <TableColumn text="Aktion" prefWidth="-1.0" minWidth="150.0"/>
+                        <TableColumn text="Benutzer" prefWidth="-1.0" minWidth="100.0"/>
+                    </columns>
+                </TableView>
+            </VBox>
         </VBox>
     </center>
 
