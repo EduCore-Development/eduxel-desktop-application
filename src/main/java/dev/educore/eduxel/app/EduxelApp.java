@@ -1,9 +1,12 @@
 package dev.educore.eduxel.app;
 
 import dev.educore.eduxel.meta.AppInfo;
+import dev.educore.eduxel.service.UpdateChecker;
+import dev.educore.eduxel.ui.common.UpdateDialog;
 import dev.educore.eduxel.ui.main.MainWindowController;
 import dev.educore.eduxel.ui.splash.SplashScreen;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -15,6 +18,7 @@ public class EduxelApp extends Application {
     public void start(Stage stage) {
         new dev.educore.eduxel.ui.splash.SplashScreen().show(() -> {
             initMainStage(stage);
+            checkForUpdates(stage);
         });
     }
 
@@ -52,5 +56,23 @@ public class EduxelApp extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Prüft asynchron auf verfügbare Updates und zeigt einen Dialog an.
+     */
+    private void checkForUpdates(Stage mainStage) {
+        UpdateChecker.checkForUpdate().thenAccept(updateAvailable -> {
+            if (updateAvailable) {
+                // Dialog auf dem JavaFX Application Thread anzeigen
+                Platform.runLater(() -> {
+                    UpdateDialog dialog = new UpdateDialog(mainStage);
+                    dialog.show();
+                });
+            }
+        }).exceptionally(ex -> {
+            System.err.println("Fehler bei der Update-Prüfung: " + ex.getMessage());
+            return null;
+        });
     }
 }

@@ -1,0 +1,7 @@
+# Eduxel Version Information
+# Diese Datei sollte auf https://edu-core.dev/version.txt gehostet werden
+
+appName=Eduxel
+version=1.0.0
+buildChannel=Dev
+
