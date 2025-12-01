@@ -2,9 +2,11 @@ package dev.educore.eduxel.persistence.school;
 
 import dev.educore.eduxel.domain.school.Teacher;
 import dev.educore.eduxel.persistence.DataSourceProvider;
+import dev.educore.eduxel.security.DataEncryptionService;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,8 +16,8 @@ public class TeacherRepository {
         String sql = "INSERT INTO teachers(first_name, last_name, subject) VALUES(?,?,?)";
         try (Connection con = DataSourceProvider.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, firstName);
-            ps.setString(2, lastName);
+            ps.setString(1, DataEncryptionService.encryptNullable(firstName));
+            ps.setString(2, DataEncryptionService.encryptNullable(lastName));
             if (subject == null || subject.isBlank()) ps.setNull(3, Types.VARCHAR); else ps.setString(3, subject);
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -29,11 +31,11 @@ public class TeacherRepository {
         String sql = "INSERT INTO teachers(first_name, last_name, subject, email, phone) VALUES(?,?,?,?,?)";
         try (Connection con = DataSourceProvider.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, t.getFirstName());
-            ps.setString(2, t.getLastName());
+            ps.setString(1, DataEncryptionService.encryptNullable(t.getFirstName()));
+            ps.setString(2, DataEncryptionService.encryptNullable(t.getLastName()));
             if (t.getSubject() == null || t.getSubject().isBlank()) ps.setNull(3, Types.VARCHAR); else ps.setString(3, t.getSubject());
-            if (t.getEmail() == null || t.getEmail().isBlank()) ps.setNull(4, Types.VARCHAR); else ps.setString(4, t.getEmail());
-            if (t.getPhone() == null || t.getPhone().isBlank()) ps.setNull(5, Types.VARCHAR); else ps.setString(5, t.getPhone());
+            if (t.getEmail() == null || t.getEmail().isBlank()) ps.setNull(4, Types.VARCHAR); else ps.setString(4, DataEncryptionService.encryptNullable(t.getEmail()));
+            if (t.getPhone() == null || t.getPhone().isBlank()) ps.setNull(5, Types.VARCHAR); else ps.setString(5, DataEncryptionService.encryptNullable(t.getPhone()));
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) return rs.getLong(1);
@@ -46,11 +48,11 @@ public class TeacherRepository {
         String sql = "UPDATE teachers SET first_name = ?, last_name = ?, subject = ?, email = ?, phone = ? WHERE id = ?";
         try (Connection con = DataSourceProvider.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, t.getFirstName());
-            ps.setString(2, t.getLastName());
+            ps.setString(1, DataEncryptionService.encryptNullable(t.getFirstName()));
+            ps.setString(2, DataEncryptionService.encryptNullable(t.getLastName()));
             if (t.getSubject() == null || t.getSubject().isBlank()) ps.setNull(3, Types.VARCHAR); else ps.setString(3, t.getSubject());
-            if (t.getEmail() == null || t.getEmail().isBlank()) ps.setNull(4, Types.VARCHAR); else ps.setString(4, t.getEmail());
-            if (t.getPhone() == null || t.getPhone().isBlank()) ps.setNull(5, Types.VARCHAR); else ps.setString(5, t.getPhone());
+            if (t.getEmail() == null || t.getEmail().isBlank()) ps.setNull(4, Types.VARCHAR); else ps.setString(4, DataEncryptionService.encryptNullable(t.getEmail()));
+            if (t.getPhone() == null || t.getPhone().isBlank()) ps.setNull(5, Types.VARCHAR); else ps.setString(5, DataEncryptionService.encryptNullable(t.getPhone()));
             ps.setLong(6, t.getId());
             ps.executeUpdate();
         }
@@ -65,30 +67,32 @@ public class TeacherRepository {
                 if (!rs.next()) return Optional.empty();
                 Teacher t = new Teacher();
                 t.setId(rs.getLong("id"));
-                t.setFirstName(rs.getString("first_name"));
-                t.setLastName(rs.getString("last_name"));
+                t.setFirstName(DataEncryptionService.decryptNullable(rs.getString("first_name")));
+                t.setLastName(DataEncryptionService.decryptNullable(rs.getString("last_name")));
                 t.setSubject(rs.getString("subject"));
-                t.setEmail(rs.getString("email"));
-                t.setPhone(rs.getString("phone"));
+                t.setEmail(DataEncryptionService.decryptNullable(rs.getString("email")));
+                t.setPhone(DataEncryptionService.decryptNullable(rs.getString("phone")));
                 return Optional.of(t);
             }
         }
     }
 
     public List<TeacherItem> listAll() throws SQLException {
-        String sql = "SELECT id, first_name, last_name, subject FROM teachers ORDER BY last_name, first_name";
+        String sql = "SELECT id, first_name, last_name FROM teachers";
         List<TeacherItem> list = new ArrayList<>();
         try (Connection con = DataSourceProvider.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 long id = rs.getLong("id");
-                String first = rs.getString("first_name");
-                String last = rs.getString("last_name");
+                String first = DataEncryptionService.decryptNullable(rs.getString("first_name"));
+                String last = DataEncryptionService.decryptNullable(rs.getString("last_name"));
                 String fullName = (last == null ? "" : last) + ", " + (first == null ? "" : first);
                 list.add(new TeacherItem(id, fullName));
             }
         }
+        // Sort in-memory by display name
+        list.sort(Comparator.comparing(item -> item.displayName, String.CASE_INSENSITIVE_ORDER));
         return list;
     }
 

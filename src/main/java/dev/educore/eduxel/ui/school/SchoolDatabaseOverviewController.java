@@ -7,6 +7,7 @@ import dev.educore.eduxel.persistence.DataSourceProvider;
 import dev.educore.eduxel.persistence.school.ClassGroupRepository;
 import dev.educore.eduxel.persistence.school.TeacherRepository;
 import dev.educore.eduxel.service.SchoolService;
+import dev.educore.eduxel.security.DataEncryptionService;
 import dev.educore.eduxel.ui.common.FxUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -116,24 +117,38 @@ public class SchoolDatabaseOverviewController {
         long classId = (selected == null) ? -1 : selected.id;
         students.clear();
         String sqlAll = "SELECT s.id, s.first_name, s.last_name, c.name AS class_name " +
-                "FROM students s LEFT JOIN class_groups c ON s.class_id = c.id " +
-                "ORDER BY c.name IS NULL, c.name, s.last_name, s.first_name";
+                "FROM students s LEFT JOIN class_groups c ON s.class_id = c.id";
         String sqlByClass = "SELECT s.id, s.first_name, s.last_name, c.name AS class_name " +
                 "FROM students s LEFT JOIN class_groups c ON s.class_id = c.id " +
-                "WHERE s.class_id = ? ORDER BY s.last_name, s.first_name";
+                "WHERE s.class_id = ?";
         try (Connection con = DataSourceProvider.getConnection();
              PreparedStatement ps = con.prepareStatement(classId <= 0 ? sqlAll : sqlByClass)) {
             if (classId > 0) ps.setLong(1, classId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
+                    String first = DataEncryptionService.decryptNullable(rs.getString("first_name"));
+                    String last = DataEncryptionService.decryptNullable(rs.getString("last_name"));
                     students.add(new StudentRow(
                             rs.getLong("id"),
-                            nvl(rs.getString("first_name")),
-                            nvl(rs.getString("last_name")),
+                            nvl(first),
+                            nvl(last),
                             nvl(rs.getString("class_name"))
                     ));
                 }
             }
+            // In-memory sort: by className (nulls last), then last, then first (case-insensitive)
+            students.sort((a, b) -> {
+                String ca = a.getClassName();
+                String cb = b.getClassName();
+                int cmpClass = (ca == null || ca.isBlank()) && (cb == null || cb.isBlank()) ? 0
+                        : (ca == null || ca.isBlank()) ? 1
+                        : (cb == null || cb.isBlank()) ? -1
+                        : ca.compareToIgnoreCase(cb);
+                if (cmpClass != 0) return cmpClass;
+                int cmpLast = nvl(a.getLastName()).compareToIgnoreCase(nvl(b.getLastName()));
+                if (cmpLast != 0) return cmpLast;
+                return nvl(a.getFirstName()).compareToIgnoreCase(nvl(b.getFirstName()));
+            });
         } catch (Exception e) {
             FxUtils.showError("Fehler beim Laden der Schüler", null, e);
         }
@@ -141,18 +156,26 @@ public class SchoolDatabaseOverviewController {
 
     private void reloadTeachers() {
         teachers.clear();
-        String sql = "SELECT id, first_name, last_name, subject FROM teachers ORDER BY last_name, first_name";
+        String sql = "SELECT id, first_name, last_name, subject FROM teachers";
         try (Connection con = DataSourceProvider.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
+                String first = DataEncryptionService.decryptNullable(rs.getString("first_name"));
+                String last = DataEncryptionService.decryptNullable(rs.getString("last_name"));
                 teachers.add(new TeacherRow(
                         rs.getLong("id"),
-                        nvl(rs.getString("first_name")),
-                        nvl(rs.getString("last_name")),
+                        nvl(first),
+                        nvl(last),
                         nvl(rs.getString("subject"))
                 ));
             }
+            // In-memory sort: by last, then first
+            teachers.sort((a, b) -> {
+                int cmpLast = nvl(a.getLastName()).compareToIgnoreCase(nvl(b.getLastName()));
+                if (cmpLast != 0) return cmpLast;
+                return nvl(a.getFirstName()).compareToIgnoreCase(nvl(b.getFirstName()));
+            });
         } catch (Exception e) {
             FxUtils.showError("Fehler beim Laden der Lehrer", null, e);
         }

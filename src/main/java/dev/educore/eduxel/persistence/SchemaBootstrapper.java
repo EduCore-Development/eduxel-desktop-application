@@ -11,13 +11,14 @@ public final class SchemaBootstrapper {
         try (Connection con = DataSourceProvider.getConnection(); Statement st = con.createStatement()) {
             // Basistabellen anlegen (idempotent)
             // 1. Lehrer (mit E-Mail und Telefon)
+            // Größere VARCHAR-Längen, um Base64-ciphertexts bequem zu speichern
             st.addBatch("CREATE TABLE IF NOT EXISTS teachers (" +
                     "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-                    "first_name VARCHAR(100) NOT NULL, " +
-                    "last_name VARCHAR(100) NOT NULL, " +
+                    "first_name VARCHAR(512) NOT NULL, " +
+                    "last_name VARCHAR(512) NOT NULL, " +
                     "subject VARCHAR(120) NULL, " +
-                    "email VARCHAR(200) NULL, " +
-                    "phone VARCHAR(40) NULL, " +
+                    "email VARCHAR(512) NULL, " +
+                    "phone VARCHAR(128) NULL, " +
                     "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ");
 
             // 2. Klassen (FK auf teachers)
@@ -34,25 +35,25 @@ public final class SchemaBootstrapper {
             // 3. Schüler (FK auf class_groups)
             st.addBatch("CREATE TABLE IF NOT EXISTS students (" +
                     "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-                    "first_name VARCHAR(100) NOT NULL, " +
-                    "last_name VARCHAR(100) NOT NULL, " +
+                    "first_name VARCHAR(512) NOT NULL, " +
+                    "last_name VARCHAR(512) NOT NULL, " +
                     "class_id BIGINT NULL, " +
-                    "street VARCHAR(200) NULL, " +
-                    "postal_code VARCHAR(20) NULL, " +
-                    "city VARCHAR(120) NULL, " +
-                    "country VARCHAR(80) NULL, " +
-                    "student_email VARCHAR(200) NULL, " +
-                    "student_mobile VARCHAR(40) NULL, " +
-                    "guardian1_name VARCHAR(200) NULL, " +
-                    "guardian1_relation VARCHAR(80) NULL, " +
-                    "guardian1_mobile VARCHAR(40) NULL, " +
-                    "guardian1_work_phone VARCHAR(40) NULL, " +
-                    "guardian1_email VARCHAR(200) NULL, " +
-                    "guardian2_name VARCHAR(200) NULL, " +
-                    "guardian2_relation VARCHAR(80) NULL, " +
-                    "guardian2_mobile VARCHAR(40) NULL, " +
-                    "guardian2_email VARCHAR(200) NULL, " +
-                    "notes TEXT NULL, " +
+                    "street VARCHAR(512) NULL, " +
+                    "postal_code VARCHAR(128) NULL, " +
+                    "city VARCHAR(512) NULL, " +
+                    "country VARCHAR(256) NULL, " +
+                    "student_email VARCHAR(512) NULL, " +
+                    "student_mobile VARCHAR(128) NULL, " +
+                    "guardian1_name VARCHAR(512) NULL, " +
+                    "guardian1_relation VARCHAR(256) NULL, " +
+                    "guardian1_mobile VARCHAR(128) NULL, " +
+                    "guardian1_work_phone VARCHAR(128) NULL, " +
+                    "guardian1_email VARCHAR(512) NULL, " +
+                    "guardian2_name VARCHAR(512) NULL, " +
+                    "guardian2_relation VARCHAR(256) NULL, " +
+                    "guardian2_mobile VARCHAR(128) NULL, " +
+                    "guardian2_email VARCHAR(512) NULL, " +
+                    "notes MEDIUMTEXT NULL, " +
                     "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                     "INDEX idx_students_class(class_id), " +
                     "INDEX idx_students_name(last_name, first_name), " +
@@ -108,6 +109,31 @@ public final class SchemaBootstrapper {
             try {
                 st.executeUpdate("ALTER TABLE teachers ADD COLUMN phone VARCHAR(40) NULL");
             } catch (SQLException ignored) { }
+
+            // Spalten vergrößern, um verschlüsselte (Base64) Daten zu fassen (idempotent; Fehler ignorieren)
+            try { st.executeUpdate("ALTER TABLE teachers MODIFY COLUMN first_name VARCHAR(512) NOT NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE teachers MODIFY COLUMN last_name VARCHAR(512) NOT NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE teachers MODIFY COLUMN email VARCHAR(512) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE teachers MODIFY COLUMN phone VARCHAR(128) NULL"); } catch (SQLException ignored) {}
+
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN first_name VARCHAR(512) NOT NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN last_name VARCHAR(512) NOT NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN street VARCHAR(512) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN postal_code VARCHAR(128) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN city VARCHAR(512) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN country VARCHAR(256) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN student_email VARCHAR(512) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN student_mobile VARCHAR(128) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian1_name VARCHAR(512) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian1_relation VARCHAR(256) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian1_mobile VARCHAR(128) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian1_work_phone VARCHAR(128) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian1_email VARCHAR(512) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian2_name VARCHAR(512) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian2_relation VARCHAR(256) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian2_mobile VARCHAR(128) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian2_email VARCHAR(512) NULL"); } catch (SQLException ignored) {}
+            try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN notes MEDIUMTEXT NULL"); } catch (SQLException ignored) {}
 
             // Weitere Migrationen für andere Tabellen könnten hier folgen (z. B. neue Schüler-Felder, Indizes, etc.)
         } catch (SQLException ignored) {
