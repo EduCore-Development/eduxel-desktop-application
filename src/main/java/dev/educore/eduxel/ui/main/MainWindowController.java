@@ -3,14 +3,18 @@ package dev.educore.eduxel.ui.main;
 import dev.educore.eduxel.meta.EduxelMeta;
 import dev.educore.eduxel.config.ClientConfig;
 import dev.educore.eduxel.persistence.SchemaBootstrapper;
-import dev.educore.eduxel.persistence.DataSourceProvider;
 import dev.educore.eduxel.navigation.NavigationManager;
 import dev.educore.eduxel.service.ActivityLogger;
 import dev.educore.eduxel.service.ReportingService;
 import dev.educore.eduxel.service.SchoolService;
 import dev.educore.eduxel.service.InventoryService;
 import dev.educore.eduxel.ui.common.FxUtils;
-import dev.educore.eduxel.ui.common.ServerConfigDialog;
+import dev.educore.eduxel.domain.school.Student;
+import dev.educore.eduxel.ui.school.StudentDetailController;
+import dev.educore.eduxel.ui.school.TeacherDetailController;
+import dev.educore.eduxel.ui.school.ClassDetailController;
+import dev.educore.eduxel.domain.school.ClassGroup;
+import dev.educore.eduxel.persistence.school.TeacherRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,6 +24,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -209,22 +218,28 @@ public class MainWindowController {
     @FXML
     private void onQuickCreateStudent() {
         setNavSelected(navSchoolButton);
-        var firstName = FxUtils.promptText("Neuer Schüler", null, "Vorname:", "");
-        if (firstName.isEmpty() || firstName.get().isBlank()) return;
-        var lastName = FxUtils.promptText("Neuer Schüler", null, "Nachname:", "");
-        if (lastName.isEmpty() || lastName.get().isBlank()) return;
-        var className = FxUtils.promptText("Neuer Schüler", null, "Klasse (optional, z.B. 7a):", "");
         try {
-            SchoolService ss = new SchoolService();
-            Long classId = null;
-            if (className.isPresent() && !className.get().isBlank()) {
-                classId = ss.ensureClassByName(className.get().trim(), null);
-            }
-            ss.createStudent(firstName.get().trim(), lastName.get().trim(), classId);
-            FxUtils.showInfo("Schüler angelegt", firstName.get().trim() + " " + lastName.get().trim());
-            // If school view is active, reload it, otherwise refresh activities
+            // Schulansicht anzeigen, damit das Kontextgefühl stimmt
             NavigationManager.showSchoolDatabaseOverview();
-            refreshActivities();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dev/educore/eduxel/ui/school/student-detail.fxml"));
+            DialogPane pane = loader.load();
+            StudentDetailController controller = loader.getController();
+            controller.initForCreate();
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(pane);
+            dialog.setTitle("Neuen Schüler anlegen");
+
+            dialog.setResultConverter(bt -> bt);
+            var result = dialog.showAndWait();
+            if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+                Student created = controller.buildResult();
+                SchoolService ss = new SchoolService();
+                ss.createStudent(created);
+                FxUtils.showInfo("Schüler angelegt", created.getFirstName() + " " + created.getLastName());
+                refreshActivities();
+            }
         } catch (Exception e) {
             FxUtils.showError("Fehler", "Schüler konnte nicht angelegt werden.", e);
         }
@@ -233,18 +248,26 @@ public class MainWindowController {
     @FXML
     private void onQuickCreateTeacher() {
         setNavSelected(navSchoolButton);
-        var firstName = FxUtils.promptText("Neuer Lehrer", null, "Vorname:", "");
-        if (firstName.isEmpty() || firstName.get().isBlank()) return;
-        var lastName = FxUtils.promptText("Neuer Lehrer", null, "Nachname:", "");
-        if (lastName.isEmpty() || lastName.get().isBlank()) return;
-        var subject = FxUtils.promptText("Neuer Lehrer", null, "Fach (optional):", "");
         try {
-            SchoolService ss = new SchoolService();
-            ss.createTeacher(firstName.get().trim(), lastName.get().trim(),
-                    subject.isPresent() ? subject.get().trim() : null);
-            FxUtils.showInfo("Lehrer angelegt", firstName.get().trim() + " " + lastName.get().trim());
-            NavigationManager.showSchoolDatabaseOverview();
-            refreshActivities();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dev/educore/eduxel/ui/school/teacher-detail.fxml"));
+            DialogPane pane = loader.load();
+            TeacherDetailController controller = loader.getController();
+            controller.initForCreate();
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(pane);
+            dialog.setTitle("Neuen Lehrer anlegen");
+
+            dialog.setResultConverter(bt -> bt);
+            var result = dialog.showAndWait();
+            if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+                if (!controller.validate()) return;
+                SchoolService ss = new SchoolService();
+                ss.createTeacher(controller.getFirstName(), controller.getLastName(), controller.getSubject());
+                FxUtils.showInfo("Lehrer angelegt", controller.getFirstName() + " " + controller.getLastName());
+                NavigationManager.showSchoolDatabaseOverview();
+                refreshActivities();
+            }
         } catch (Exception e) {
             FxUtils.showError("Fehler", "Lehrer konnte nicht angelegt werden.", e);
         }
@@ -253,15 +276,36 @@ public class MainWindowController {
     @FXML
     private void onQuickCreateClass() {
         setNavSelected(navSchoolButton);
-        var name = FxUtils.promptText("Neue Klasse", null, "Name (z.B. 7a):", "");
-        if (name.isEmpty() || name.get().isBlank()) return;
-        var grade = FxUtils.promptInt("Neue Klasse", null, "Jahrgang (optional):", null);
         try {
-            SchoolService ss = new SchoolService();
-            ss.createClass(name.get().trim(), grade.orElse(null));
-            FxUtils.showInfo("Klasse angelegt", name.get().trim());
-            NavigationManager.showSchoolDatabaseOverview();
-            refreshActivities();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dev/educore/eduxel/ui/school/class-detail.fxml"));
+            DialogPane pane = loader.load();
+            ClassDetailController controller = loader.getController();
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(pane);
+            dialog.setTitle("Neue Klasse anlegen");
+
+            dialog.setResultConverter(bt -> bt);
+            var result = dialog.showAndWait();
+            if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+                if (!controller.validate()) return;
+
+                ClassGroup group = new ClassGroup();
+                group.setName(controller.getName());
+                group.setGrade(controller.getGrade());
+                group.setSchoolType(controller.getSchoolType());
+                group.setRoom(controller.getRoom());
+                TeacherRepository.TeacherItem teacherItem = controller.getSelectedTeacher();
+                if (teacherItem != null) {
+                    group.setTeacherId(teacherItem.id);
+                }
+
+                SchoolService ss = new SchoolService();
+                ss.createClass(group);
+                FxUtils.showInfo("Klasse angelegt", group.getName());
+                NavigationManager.showSchoolDatabaseOverview();
+                refreshActivities();
+            }
         } catch (Exception e) {
             FxUtils.showError("Fehler", "Klasse konnte nicht angelegt werden.", e);
         }

@@ -36,11 +36,20 @@ public final class FxUtils {
     }
 
     public static void showError(String title, String content, Throwable t) {
-        String msg = content;
-        if (t != null && t.getMessage() != null) {
-            msg += "\n\n" + t.getMessage();
+        StringBuilder msg = new StringBuilder();
+        if (content != null && !content.isEmpty()) {
+            msg.append(content);
         }
-        Alert a = new Alert(Alert.AlertType.ERROR, msg, ButtonType.OK);
+        if (t != null) {
+            if (msg.length() > 0) {
+                msg.append("\n\n");
+            }
+            msg.append(t.toString());
+        }
+        if (msg.length() == 0) {
+            msg.append("Unbekannter Fehler");
+        }
+        Alert a = new Alert(Alert.AlertType.ERROR, msg.toString(), ButtonType.OK);
         a.setTitle(title);
         a.setHeaderText(null);
         a.showAndWait();

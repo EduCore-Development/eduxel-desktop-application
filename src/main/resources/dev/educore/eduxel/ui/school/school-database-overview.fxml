@@ -15,6 +15,10 @@
             <items>
                 <VBox spacing="8" styleClass="content-area">
                     <Label text="Klassen" styleClass="activity-title"/>
+                    <HBox spacing="6">
+                        <Button text="Anzeigen" onAction="#onViewSelectedClass" styleClass="quick-button-secondary"/>
+                        <Button text="Neu" onAction="#onQuickCreateClass" styleClass="quick-button-primary"/>
+                    </HBox>
                     <ListView fx:id="classList" VBox.vgrow="ALWAYS"/>
                 </VBox>
 
@@ -26,42 +30,54 @@
 
                     <TitledPane text="Schüler" expanded="true" styleClass="card-pane">
                         <content>
-                            <TableView fx:id="studentTable"
-                                       styleClass="school-table"
-                                       prefHeight="200.0">
+                            <VBox spacing="8">
+                                <HBox alignment="CENTER_LEFT" spacing="8">
+                                    <Button text="+ Schüler hinzufügen" fx:id="btnAddStudent" styleClass="primary-button"/>
+                                    <Button text="Anzeigen" onAction="#onViewSelectedStudent" styleClass="quick-button-secondary"/>
+                                </HBox>
+                                <TableView fx:id="studentTable"
+                                           styleClass="school-table"
+                                           prefHeight="200.0">
 
-                                <columnResizePolicy>
-                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                                </columnResizePolicy>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
 
-                                <columns>
-                                    <TableColumn fx:id="colStudentClass" text="Klasse" minWidth="120"/>
-                                    <TableColumn fx:id="colStudentLast" text="Nachname" minWidth="140"/>
-                                    <TableColumn fx:id="colStudentFirst" text="Vorname" minWidth="140"/>
-                                </columns>
+                                    <columns>
+                                        <TableColumn fx:id="colStudentClass" text="Klasse" minWidth="120"/>
+                                        <TableColumn fx:id="colStudentLast" text="Nachname" minWidth="140"/>
+                                        <TableColumn fx:id="colStudentFirst" text="Vorname" minWidth="140"/>
+                                    </columns>
 
-                            </TableView>
+                                </TableView>
+                            </VBox>
                         </content>
                     </TitledPane>
 
 
                     <TitledPane text="Lehrer" expanded="true" styleClass="card-pane">
                         <content>
-                            <TableView fx:id="teacherTable"
-                                       styleClass="school-table"
-                                       prefHeight="160.0">
+                            <VBox spacing="8">
+                                <HBox alignment="CENTER_LEFT" spacing="8">
+                                    <Button text="+ Lehrer hinzufügen" onAction="#onQuickCreateTeacher" styleClass="primary-button"/>
+                                    <Button text="Anzeigen" onAction="#onViewSelectedTeacher" styleClass="quick-button-secondary"/>
+                                </HBox>
+                                <TableView fx:id="teacherTable"
+                                           styleClass="school-table"
+                                           prefHeight="160.0">
 
-                                <columnResizePolicy>
-                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                                </columnResizePolicy>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                    </columnResizePolicy>
 
-                                <columns>
-                                    <TableColumn fx:id="colTeacherLast" text="Nachname" minWidth="140"/>
-                                    <TableColumn fx:id="colTeacherFirst" text="Vorname" minWidth="140"/>
-                                    <TableColumn fx:id="colTeacherSubject" text="Fach" minWidth="140"/>
-                                </columns>
+                                    <columns>
+                                        <TableColumn fx:id="colTeacherLast" text="Nachname" minWidth="140"/>
+                                        <TableColumn fx:id="colTeacherFirst" text="Vorname" minWidth="140"/>
+                                        <TableColumn fx:id="colTeacherSubject" text="Fach" minWidth="140"/>
+                                    </columns>
 
-                            </TableView>
+                                </TableView>
+                            </VBox>
                         </content>
                     </TitledPane>
                 </VBox>

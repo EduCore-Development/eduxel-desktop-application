@@ -625,3 +625,89 @@
 .school-root .split-pane {
     -fx-background-color: transparent;
 }
+
+.dialog-card {
+    -fx-background-color: transparent; /* kein grauer Block hinter der Card */
+    -fx-padding: 0;
+}
+
+.dialog-card > .content {
+    -fx-background-color: transparent;
+}
+
+.dialog-content {
+    -fx-padding: 12 16 16 16;
+}
+
+.dialog-header {
+    -fx-padding: 0 0 8 0;
+}
+
+.dialog-scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.dialog-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Dialog-Buttons an primary/secondary-Style anlehnen */
+.dialog-pane .button-bar .button {
+    -fx-background-radius: 18;
+    -fx-padding: 6 18 6 18;
+}
+
+.dialog-pane .button-bar .button:default {
+    -fx-background-color: #4f46e5;
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button-bar .button:cancel {
+    -fx-background-color: transparent;
+    -fx-border-color: #d1d5db;
+    -fx-text-fill: #374151;
+}
+
+.context-menu {
+    -fx-background-color: rgba(255,255,255,0.98);
+    -fx-background-radius: 14;
+    -fx-padding: 6 0 6 0;
+    -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.18), 18, 0.28, 0, 6);
+    -fx-border-color: rgba(148,163,184,0.35);
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+}
+
+.context-menu .menu-item {
+    -fx-padding: 0;
+}
+
+.context-menu .menu-item > .label {
+    -fx-padding: 7 18 7 18;
+    -fx-text-fill: #111827;
+    -fx-font-size: 12;
+}
+
+.context-menu .menu-item:focused > .label,
+.context-menu .menu-item:hover > .label {
+    -fx-background-color: #eef2ff;
+    -fx-text-fill: #4338ca;
+}
+
+.context-menu .menu-item:disabled > .label {
+    -fx-text-fill: #cbd5e1;
+}
+
+.context-menu .separator {
+    -fx-padding: 4 0 4 0;
+}
+
+.context-menu .separator .line {
+    -fx-border-color: rgba(148,163,184,0.35);
+    -fx-border-width: 0 0 1 0;
+}
+
+.context-menu .menu-item:focused,
+.context-menu .menu-item:hover {
+    -fx-background-color: transparent;
+}

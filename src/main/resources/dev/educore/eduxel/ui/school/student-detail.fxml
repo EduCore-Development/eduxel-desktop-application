@@ -1,14 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
+<?import javafx.scene.image.Image?>
+<DialogPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="dev.educore.eduxel.ui.school.StudentDetailController"
+            stylesheets="@../main/main-theme.css"
+            styleClass="dialog-card">
 
-</AnchorPane>
+    <content>
+        <ScrollPane fitToWidth="true" prefViewportHeight="500" styleClass="dialog-scroll-pane">
+            <content>
+                <VBox spacing="12" styleClass="dialog-content">
+                    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="dialog-header">
+                        <ImageView fitHeight="24" fitWidth="24">
+                            <image>
+                                <Image url="@logo.png"/>
+                            </image>
+                        </ImageView>
+                        <VBox spacing="2">
+                            <Label text="Schüler" styleClass="activity-title"/>
+                            <Label text="Stammdaten, Klasse und Kontakte" styleClass="activity-subtitle"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12">
+                        <!-- Linke Spalte: Basisdaten + Adresse + Schülerkontakt -->
+                        <VBox spacing="10" HBox.hgrow="ALWAYS">
+                            <TitledPane text="Basisdaten" expanded="true">
+                                <content>
+                                    <GridPane hgap="10" vgap="8">
+                                        <columnConstraints>
+                                            <ColumnConstraints percentWidth="50"/>
+                                            <ColumnConstraints percentWidth="50"/>
+                                        </columnConstraints>
+                                        <children>
+                                            <Label text="Vorname" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="txtFirstName" promptText="Max" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+
+                                            <Label text="Nachname" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                                            <TextField fx:id="txtLastName" promptText="Mustermann" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                                            <Label text="Klasse" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                            <ComboBox fx:id="cbClass" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                                        </children>
+                                    </GridPane>
+                                </content>
+                            </TitledPane>
+
+                            <TitledPane text="Adresse &amp; Schülerkontakt" expanded="true">
+                                <content>
+                                    <GridPane hgap="10" vgap="8">
+                                        <columnConstraints>
+                                            <ColumnConstraints percentWidth="50"/>
+                                            <ColumnConstraints percentWidth="50"/>
+                                        </columnConstraints>
+                                        <children>
+                                            <Label text="Straße" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="txtStreet" promptText="Musterstraße 1" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                                            <Label text="PLZ" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="txtPostalCode" promptText="12345" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+
+                                            <Label text="Ort" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                                            <TextField fx:id="txtCity" promptText="Musterstadt" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                                            <Label text="Land" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="txtCountry" promptText="Deutschland" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                                            <Label text="E-Mail Schüler" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                                            <TextField fx:id="txtStudentEmail" promptText="max@muster.de" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+
+                                            <Label text="Mobil Schüler" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                                            <TextField fx:id="txtStudentMobile" promptText="0151..." GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+                                        </children>
+                                    </GridPane>
+                                </content>
+                            </TitledPane>
+                        </VBox>
+
+                        <!-- Rechte Spalte: Erziehungsberechtigte + Notizen -->
+                        <VBox spacing="10" HBox.hgrow="ALWAYS">
+                            <TitledPane text="Erziehungsberechtigte" expanded="true">
+                                <content>
+                                    <VBox spacing="8">
+                                        <Label text="Erziehungsberechtigte(r) 1" styleClass="activity-subtitle"/>
+                                        <GridPane hgap="10" vgap="8">
+                                            <columnConstraints>
+                                                <ColumnConstraints percentWidth="50"/>
+                                                <ColumnConstraints percentWidth="50"/>
+                                            </columnConstraints>
+                                            <children>
+                                                <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                                <TextField fx:id="txtGuardian1Name" promptText="Mutter / Vater" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                                                <Label text="Beziehung" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                                <TextField fx:id="txtGuardian1Relation" promptText="Mutter" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+
+                                                <Label text="Mobil" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                                                <TextField fx:id="txtGuardian1Mobile" promptText="0176..." GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                                                <Label text="Telefon (Arbeit)" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                                                <TextField fx:id="txtGuardian1WorkPhone" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+
+                                                <Label text="E-Mail" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                                                <TextField fx:id="txtGuardian1Email" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                                            </children>
+                                        </GridPane>
+
+                                        <Separator/>
+
+                                        <Label text="Erziehungsberechtigte(r) 2 (optional)" styleClass="activity-subtitle"/>
+                                        <GridPane hgap="10" vgap="8">
+                                            <columnConstraints>
+                                                <ColumnConstraints percentWidth="50"/>
+                                                <ColumnConstraints percentWidth="50"/>
+                                            </columnConstraints>
+                                            <children>
+                                                <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                                                <TextField fx:id="txtGuardian2Name" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                                                <Label text="Beziehung" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                                                <TextField fx:id="txtGuardian2Relation" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+
+                                                <Label text="Mobil" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                                                <TextField fx:id="txtGuardian2Mobile" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                                                <Label text="E-Mail" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                                                <TextField fx:id="txtGuardian2Email" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                                            </children>
+                                        </GridPane>
+                                    </VBox>
+                                </content>
+                            </TitledPane>
+
+                            <TitledPane text="Notizen" expanded="false">
+                                <content>
+                                    <TextArea fx:id="txtNotes" promptText="Besondere Hinweise, Allergien, Abholberechtigungen..." prefRowCount="4"/>
+                                </content>
+                            </TitledPane>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </content>
+
+    <buttonTypes>
+        <ButtonType text="Abbrechen" buttonData="CANCEL_CLOSE"/>
+        <ButtonType text="Speichern" buttonData="OK_DONE"/>
+    </buttonTypes>
+</DialogPane>
