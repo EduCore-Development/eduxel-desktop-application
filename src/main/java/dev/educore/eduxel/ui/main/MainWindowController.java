@@ -52,6 +52,9 @@ public class MainWindowController {
     private VBox navInventoryButton;
 
     @FXML
+    private VBox navSearchButton;
+
+    @FXML
     private VBox navSettingsButton;
 
     @FXML
@@ -135,6 +138,9 @@ public class MainWindowController {
         if (navInventoryButton != null) {
             navInventoryButton.getStyleClass().remove("nav-item-selected");
         }
+        if (navSearchButton != null) {
+            navSearchButton.getStyleClass().remove("nav-item-selected");
+        }
         if (navSettingsButton != null) {
             navSettingsButton.getStyleClass().remove("nav-item-selected");
         }
@@ -205,7 +211,15 @@ public class MainWindowController {
     @FXML
     private void onNavInventoryClicked() {
         setNavSelected(navInventoryButton);
+        NavigationManager.showInventoryOverview();
         addActivity("Inventar", "Inventarübersicht geöffnet", "Emin");
+    }
+
+    @FXML
+    private void onNavSearchClicked() {
+        setNavSelected(navSearchButton);
+        NavigationManager.showSearch();
+        addActivity("Suche", "Globale Suche geöffnet", "Emin");
     }
 
     @FXML

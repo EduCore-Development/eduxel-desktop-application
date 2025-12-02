@@ -35,6 +35,13 @@ public final class FxUtils {
         a.showAndWait();
     }
 
+    public static void showWarning(String title, String content) {
+        Alert a = new Alert(Alert.AlertType.WARNING, content, ButtonType.OK);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.showAndWait();
+    }
+
     public static void showError(String title, String content, Throwable t) {
         StringBuilder msg = new StringBuilder();
         if (content != null && !content.isEmpty()) {

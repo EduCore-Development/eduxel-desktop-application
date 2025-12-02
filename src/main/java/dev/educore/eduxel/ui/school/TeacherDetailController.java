@@ -25,6 +25,24 @@ public class TeacherDetailController {
         this.editingTeacher = null;
     }
 
+    public void setTeacherId(Long teacherId) {
+        if (teacherId == null) {
+            initForCreate();
+            return;
+        }
+        try {
+            Teacher t = schoolService.loadTeacher(teacherId).orElse(null);
+            if (t != null) {
+                initForEdit(t);
+            } else {
+                initForCreate();
+            }
+        } catch (Exception e) {
+            FxUtils.showError("Fehler beim Laden des Lehrers", null, e);
+            initForCreate();
+        }
+    }
+
     public void initForEdit(Teacher teacher) {
         this.editingTeacher = teacher;
         txtFirstName.setText(teacher.getFirstName());

@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="dev.educore.eduxel.ui.inventory.InventoryOverviewController"
+            stylesheets="@../main/main-theme.css">
 
-</AnchorPane>
+    <center>
+        <VBox spacing="16" styleClass="content-area">
+            <padding>
+                <Insets topRightBottomLeft="16"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="💻 Inventar" styleClass="activity-title"/>
+                <Label text="Geräte und Zuweisungen verwalten" styleClass="activity-subtitle"/>
+            </HBox>
+
+            <Label text="Inventarverwaltung wird demnächst verfügbar sein..."
+                   styleClass="activity-subtitle"
+                   style="-fx-text-fill: #6b7280;"/>
+        </VBox>
+    </center>
+
+    <padding>
+        <Insets topRightBottomLeft="16"/>
+    </padding>
+</BorderPane>

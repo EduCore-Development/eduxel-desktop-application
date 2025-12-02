@@ -5,6 +5,8 @@ import dev.educore.eduxel.persistence.DataSourceProvider;
 import dev.educore.eduxel.security.DataEncryptionService;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentRepository {
 
@@ -168,5 +170,96 @@ public class StudentRepository {
             ps.setLong(1, id);
             ps.executeUpdate();
         }
+    }
+
+    /**
+     * Sucht Schüler nach Suchbegriff (Name, Notizen, etc.)
+     * Da Daten verschlüsselt sind, werden alle Datensätze geladen und clientseitig gefiltert.
+     */
+    public List<Student> searchStudents(String searchTerm, Long filterClassId, int limit) throws SQLException {
+        StringBuilder sql = new StringBuilder(
+                "SELECT id, first_name, last_name, class_id, " +
+                "street, postal_code, city, country, " +
+                "student_email, student_mobile, " +
+                "guardian1_name, guardian1_relation, guardian1_mobile, guardian1_work_phone, guardian1_email, " +
+                "guardian2_name, guardian2_relation, guardian2_mobile, guardian2_email, " +
+                "notes FROM students WHERE 1=1"
+        );
+
+        if (filterClassId != null) {
+            sql.append(" AND class_id = ?");
+        }
+
+        List<Student> results = new ArrayList<>();
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            int paramIdx = 1;
+            if (filterClassId != null) {
+                ps.setLong(paramIdx++, filterClassId);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next() && results.size() < limit) {
+                    Student s = extractStudentFromResultSet(rs);
+
+                    // Client-side filtering on decrypted data
+                    if (searchTerm == null || searchTerm.isBlank() || matchesSearchTerm(s, searchTerm)) {
+                        results.add(s);
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Lädt alle Schüler (mit optionalem Limit)
+     */
+    public List<Student> findAll(int limit) throws SQLException {
+        return searchStudents(null, null, limit);
+    }
+
+    private boolean matchesSearchTerm(Student s, String term) {
+        if (term == null || term.isBlank()) return true;
+        String lowerTerm = term.toLowerCase();
+
+        return matches(s.getFirstName(), lowerTerm) ||
+               matches(s.getLastName(), lowerTerm) ||
+               matches(s.getStudentEmail(), lowerTerm) ||
+               matches(s.getCity(), lowerTerm) ||
+               matches(s.getNotes(), lowerTerm) ||
+               matches(s.getGuardian1Name(), lowerTerm) ||
+               matches(s.getGuardian2Name(), lowerTerm);
+    }
+
+    private boolean matches(String value, String term) {
+        return value != null && value.toLowerCase().contains(term);
+    }
+
+    private Student extractStudentFromResultSet(ResultSet rs) throws SQLException {
+        Student s = new Student();
+        s.setId(rs.getLong("id"));
+        s.setFirstName(DataEncryptionService.decryptNullable(rs.getString("first_name")));
+        s.setLastName(DataEncryptionService.decryptNullable(rs.getString("last_name")));
+        long classId = rs.getLong("class_id");
+        s.setClassId(rs.wasNull() ? null : classId);
+        s.setStreet(DataEncryptionService.decryptNullable(rs.getString("street")));
+        s.setPostalCode(DataEncryptionService.decryptNullable(rs.getString("postal_code")));
+        s.setCity(DataEncryptionService.decryptNullable(rs.getString("city")));
+        s.setCountry(DataEncryptionService.decryptNullable(rs.getString("country")));
+        s.setStudentEmail(DataEncryptionService.decryptNullable(rs.getString("student_email")));
+        s.setStudentMobile(DataEncryptionService.decryptNullable(rs.getString("student_mobile")));
+        s.setGuardian1Name(DataEncryptionService.decryptNullable(rs.getString("guardian1_name")));
+        s.setGuardian1Relation(DataEncryptionService.decryptNullable(rs.getString("guardian1_relation")));
+        s.setGuardian1Mobile(DataEncryptionService.decryptNullable(rs.getString("guardian1_mobile")));
+        s.setGuardian1WorkPhone(DataEncryptionService.decryptNullable(rs.getString("guardian1_work_phone")));
+        s.setGuardian1Email(DataEncryptionService.decryptNullable(rs.getString("guardian1_email")));
+        s.setGuardian2Name(DataEncryptionService.decryptNullable(rs.getString("guardian2_name")));
+        s.setGuardian2Relation(DataEncryptionService.decryptNullable(rs.getString("guardian2_relation")));
+        s.setGuardian2Mobile(DataEncryptionService.decryptNullable(rs.getString("guardian2_mobile")));
+        s.setGuardian2Email(DataEncryptionService.decryptNullable(rs.getString("guardian2_email")));
+        s.setNotes(DataEncryptionService.decryptNullable(rs.getString("notes")));
+        return s;
     }
 }

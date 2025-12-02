@@ -107,4 +107,68 @@ public class TeacherRepository {
 
         @Override public String toString() { return displayName; }
     }
+
+    /**
+     * Sucht Lehrer nach Suchbegriff (Name, Fach, Email, etc.)
+     */
+    public List<Teacher> searchTeachers(String searchTerm, String subjectFilter, int limit) throws SQLException {
+        String sql = "SELECT id, first_name, last_name, subject, email, phone FROM teachers";
+        List<Teacher> results = new ArrayList<>();
+
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next() && results.size() < limit) {
+                Teacher t = extractTeacherFromResultSet(rs);
+
+                // Client-side filtering
+                if (matchesSearchTerm(t, searchTerm, subjectFilter)) {
+                    results.add(t);
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Lädt alle Lehrer als vollständige Teacher-Objekte
+     */
+    public List<Teacher> findAll(int limit) throws SQLException {
+        return searchTeachers(null, null, limit);
+    }
+
+    private boolean matchesSearchTerm(Teacher t, String searchTerm, String subjectFilter) {
+        // Subject filter
+        if (subjectFilter != null && !subjectFilter.isBlank()) {
+            if (t.getSubject() == null || !t.getSubject().equalsIgnoreCase(subjectFilter)) {
+                return false;
+            }
+        }
+
+        // General search term
+        if (searchTerm == null || searchTerm.isBlank()) return true;
+        String lowerTerm = searchTerm.toLowerCase();
+
+        return matches(t.getFirstName(), lowerTerm) ||
+               matches(t.getLastName(), lowerTerm) ||
+               matches(t.getSubject(), lowerTerm) ||
+               matches(t.getEmail(), lowerTerm) ||
+               matches(t.getPhone(), lowerTerm);
+    }
+
+    private boolean matches(String value, String term) {
+        return value != null && value.toLowerCase().contains(term);
+    }
+
+    private Teacher extractTeacherFromResultSet(ResultSet rs) throws SQLException {
+        Teacher t = new Teacher();
+        t.setId(rs.getLong("id"));
+        t.setFirstName(DataEncryptionService.decryptNullable(rs.getString("first_name")));
+        t.setLastName(DataEncryptionService.decryptNullable(rs.getString("last_name")));
+        t.setSubject(rs.getString("subject"));
+        t.setEmail(DataEncryptionService.decryptNullable(rs.getString("email")));
+        t.setPhone(DataEncryptionService.decryptNullable(rs.getString("phone")));
+        return t;
+    }
 }

@@ -67,6 +67,31 @@
 
             <Separator/>
 
+            <VBox spacing="12" styleClass="activity-card" style="-fx-background-color: rgba(254, 242, 242, 0.6); -fx-border-color: rgba(220, 38, 38, 0.2); -fx-border-width: 1; -fx-border-radius: 14; -fx-background-radius: 14;">
+                <padding>
+                    <Insets topRightBottomLeft="16"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="⚠" style="-fx-font-size: 22; -fx-text-fill: #dc2626; -fx-font-weight: bold;"/>
+                    <VBox spacing="4">
+                        <Label text="Gefahrenzone" styleClass="activity-subtitle" style="-fx-text-fill: #dc2626; -fx-font-weight: 700;"/>
+                        <Label text="Ausloggen und alle lokalen Einstellungen löschen" style="-fx-text-fill: #991b1b; -fx-font-size: 11;"/>
+                    </VBox>
+                </HBox>
+
+                <Label text="Alle gespeicherten Verbindungsdaten (Server-IP, Port, Secret) werden gelöscht. Die Datenbank bleibt unverändert."
+                       wrapText="true"
+                       style="-fx-text-fill: #7f1d1d; -fx-font-size: 12;"/>
+
+                <Button text="Ausloggen &amp; Zurücksetzen"
+                        onAction="#onLogout"
+                        style="-fx-background-color: #dc2626; -fx-text-fill: white; -fx-font-weight: 600; -fx-background-radius: 10; -fx-padding: 10 20 10 20;"
+                        maxWidth="Infinity"/>
+            </VBox>
+
+            <Separator/>
+
             <VBox spacing="6">
                 <Label text="Build-Informationen" styleClass="activity-subtitle"/>
                 <Label fx:id="buildInfoLabel"/>

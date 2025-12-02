@@ -73,6 +73,20 @@
                 </HBox>
             </VBox>
 
+            <VBox fx:id="navSearchButton"
+                  onMouseClicked="#onNavSearchClicked"
+                  styleClass="nav-item nav-item-search">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
+                    <StackPane styleClass="nav-icon-wrapper">
+                        <Label text="🔍" styleClass="nav-icon-label"/>
+                    </StackPane>
+                    <VBox spacing="2">
+                        <Label text="Suche" styleClass="nav-label"/>
+                        <Label text="Globale Suche &amp; Filter" styleClass="nav-caption"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
             <VBox fx:id="navSettingsButton"
                   onMouseClicked="#onNavSettingsClicked"
                   styleClass="nav-item nav-item-selected nav-item-secondary">

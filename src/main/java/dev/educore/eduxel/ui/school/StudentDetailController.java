@@ -102,6 +102,20 @@ public class StudentDetailController {
         this.editingStudent = null;
     }
 
+    public void setStudentId(Long studentId) {
+        if (studentId == null) {
+            initForCreate();
+            return;
+        }
+        try {
+            Student s = schoolService.loadStudent(studentId).orElse(null);
+            initForEdit(s);
+        } catch (Exception e) {
+            FxUtils.showError("Fehler beim Laden des Schülers", null, e);
+            initForCreate();
+        }
+    }
+
     public void initForEdit(Student s) {
         this.editingStudent = s;
         if (s == null) return;

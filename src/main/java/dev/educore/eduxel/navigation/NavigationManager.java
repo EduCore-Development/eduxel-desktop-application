@@ -31,6 +31,10 @@ public final class NavigationManager {
         setCenter("/dev/educore/eduxel/ui/settings/settings.fxml");
     }
 
+    public static void showSearch() {
+        setCenter("/dev/educore/eduxel/ui/school/search-view.fxml");
+    }
+
     private static void setCenter(String fxmlPath) {
         if (root == null) {
             return;

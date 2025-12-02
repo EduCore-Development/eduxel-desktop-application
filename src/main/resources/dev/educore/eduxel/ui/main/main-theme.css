@@ -216,6 +216,14 @@
     -fx-background-color: rgba(79, 70, 229, 0.10);
 }
 
+.table-view > .virtual-flow > .clipped-container > .sheet > .table-row-cell:selected .text {
+    -fx-fill: #111827; /* Dunkler Text auch bei Auswahl */
+}
+
+.table-view > .virtual-flow > .clipped-container > .sheet > .table-row-cell:selected .table-cell {
+    -fx-text-fill: #111827; /* Dunkler Text in ausgewählten Zellen */
+}
+
 .table-view .column-header-background {
     -fx-background-color: white; /* Header ebenfalls weiß */
     -fx-background-radius: 14 14 0 0;
@@ -497,6 +505,60 @@
 .dialog-pane .button-bar > .container {
     -fx-padding: 10 0 0 0;
     -fx-spacing: 8;
+}
+
+/* TabPane Styling - modern und transparent */
+.tab-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-tab-min-height: 40;
+}
+
+.tab-pane > .tab-header-area {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 12 0;
+}
+
+.tab-pane > .tab-header-area > .headers-region {
+    -fx-background-color: transparent;
+}
+
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-color: rgba(249, 250, 251, 0.6);
+    -fx-background-insets: 0;
+    -fx-background-radius: 10 10 0 0;
+    -fx-border-color: transparent;
+    -fx-padding: 8 20 8 20;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: white;
+    -fx-background-radius: 14 14 0 0;
+}
+
+.tab-pane .tab:hover {
+    -fx-background-color: rgba(245, 245, 255, 0.9);
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 13;
+    -fx-font-weight: 600;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #111827;
+    -fx-font-weight: 700;
+}
+
+.tab-pane > .tab-content-area {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
 }
 
 .dialog-pane .button {

@@ -34,6 +34,19 @@ public class ClientConfig {
         p.put(KEY_SECRET, secretEncrypted == null ? "" : secretEncrypted);
     }
 
+    /**
+     * Löscht alle gespeicherten Einstellungen (Logout/Reset)
+     */
+    public static void clearConfig() {
+        try {
+            Preferences p = Preferences.userRoot().node(PREF_NODE);
+            p.clear();
+            p.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean isConfigured() {
         return host != null && !host.isBlank() && port > 0 && secretEncrypted != null && !secretEncrypted.isBlank();
     }

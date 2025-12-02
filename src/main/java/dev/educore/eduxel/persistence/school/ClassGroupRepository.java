@@ -122,4 +122,71 @@ public class ClassGroupRepository {
 
         @Override public String toString() { return name; }
     }
+
+    /**
+     * Sucht Klassen nach Name oder Jahrgang
+     */
+    public List<ClassGroup> searchClasses(String searchTerm, Integer gradeFilter, int limit) throws SQLException {
+        StringBuilder sql = new StringBuilder(
+                "SELECT id, name, grade, school_type, room, teacher_id FROM class_groups WHERE 1=1"
+        );
+
+        if (gradeFilter != null) {
+            sql.append(" AND grade = ?");
+        }
+
+        List<ClassGroup> results = new ArrayList<>();
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            int paramIdx = 1;
+            if (gradeFilter != null) {
+                ps.setInt(paramIdx++, gradeFilter);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next() && results.size() < limit) {
+                    ClassGroup g = extractClassGroupFromResultSet(rs);
+
+                    // Client-side text search
+                    if (matchesSearchTerm(g, searchTerm)) {
+                        results.add(g);
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Lädt alle Klassen als vollständige ClassGroup-Objekte
+     */
+    public List<ClassGroup> findAllFull(int limit) throws SQLException {
+        return searchClasses(null, null, limit);
+    }
+
+    private boolean matchesSearchTerm(ClassGroup g, String searchTerm) {
+        if (searchTerm == null || searchTerm.isBlank()) return true;
+        String lowerTerm = searchTerm.toLowerCase();
+
+        return matches(g.getName(), lowerTerm) ||
+               matches(g.getSchoolType(), lowerTerm) ||
+               matches(g.getRoom(), lowerTerm);
+    }
+
+    private boolean matches(String value, String term) {
+        return value != null && value.toLowerCase().contains(term);
+    }
+
+    private ClassGroup extractClassGroupFromResultSet(ResultSet rs) throws SQLException {
+        ClassGroup g = new ClassGroup();
+        g.setId(rs.getLong("id"));
+        g.setName(rs.getString("name"));
+        g.setGrade((Integer) rs.getObject("grade"));
+        g.setSchoolType(rs.getString("school_type"));
+        g.setRoom(rs.getString("room"));
+        Object tid = rs.getObject("teacher_id");
+        g.setTeacherId(tid == null ? null : ((Number) tid).longValue());
+        return g;
+    }
 }

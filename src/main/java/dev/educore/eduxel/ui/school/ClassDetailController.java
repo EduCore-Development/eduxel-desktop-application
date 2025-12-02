@@ -1,6 +1,7 @@
 package dev.educore.eduxel.ui.school;
 
 import dev.educore.eduxel.domain.school.ClassGroup;
+import dev.educore.eduxel.persistence.school.ClassGroupRepository;
 import dev.educore.eduxel.persistence.school.TeacherRepository;
 import dev.educore.eduxel.ui.common.FxUtils;
 import javafx.collections.FXCollections;
@@ -62,6 +63,19 @@ public class ClassDetailController {
             return false;
         }
         return true;
+    }
+
+    public void setClassId(Long classId) {
+        if (classId == null) return;
+        try {
+            ClassGroupRepository repo = new ClassGroupRepository();
+            ClassGroup group = repo.findById(classId);
+            if (group != null) {
+                initForEdit(group);
+            }
+        } catch (Exception e) {
+            FxUtils.showError("Fehler beim Laden der Klasse", null, e);
+        }
     }
 
     public void initForEdit(ClassGroup group) {

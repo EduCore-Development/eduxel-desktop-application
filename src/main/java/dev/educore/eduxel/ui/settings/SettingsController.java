@@ -115,6 +115,52 @@ public class SettingsController {
         openUrl(GITHUB_URL);
     }
 
+    @FXML
+    private void onLogout() {
+        Alert confirm = new Alert(Alert.AlertType.WARNING);
+        confirm.setTitle("Ausloggen & Zurücksetzen");
+        confirm.setHeaderText("Möchten Sie sich wirklich ausloggen?");
+        confirm.setContentText(
+            "Alle gespeicherten Einstellungen (Server-IP, Port, Secret) werden gelöscht.\n\n" +
+            "Die Datenbank bleibt unverändert.\n" +
+            "Sie müssen sich danach neu anmelden."
+        );
+        confirm.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                performLogout();
+            }
+        });
+    }
+
+    private void performLogout() {
+        try {
+            // Lösche gespeicherte Konfiguration
+            ClientConfig.clearConfig();
+
+            // Setze DataSource zurück
+            DataSourceProvider.reset();
+
+            // Leere Felder
+            if (hostField != null) hostField.clear();
+            if (portField != null) portField.clear();
+            if (secretField != null) secretField.clear();
+
+            showOk("Erfolgreich ausgeloggt. Bitte neue Verbindung konfigurieren.");
+
+            // Optional: Info-Dialog
+            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            info.setTitle("Ausgeloggt");
+            info.setHeaderText("Sie wurden erfolgreich ausgeloggt");
+            info.setContentText("Bitte konfigurieren Sie eine neue Verbindung zum Server.");
+            info.showAndWait();
+
+        } catch (Exception e) {
+            showError("Fehler beim Ausloggen: " + optionalMessage(e));
+        }
+    }
+
     private void openUrl(String url) {
         if (url == null || url.isBlank()) return;
         try {
