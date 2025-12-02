@@ -171,4 +171,16 @@ public class TeacherRepository {
         t.setPhone(DataEncryptionService.decryptNullable(rs.getString("phone")));
         return t;
     }
+
+    /**
+     * Löscht einen Lehrer
+     */
+    public void delete(long id) throws SQLException {
+        String sql = "DELETE FROM teachers WHERE id = ?";
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, id);
+            ps.executeUpdate();
+        }
+    }
 }

@@ -110,6 +110,12 @@ public class SchoolService {
         ActivityLogger.log("Schule", "Lehrer aktualisiert: " + teacher.getFirstName() + " " + teacher.getLastName(), null);
     }
 
+    public void deleteTeacher(long id) throws SQLException {
+        Optional<Teacher> existing = loadTeacher(id);
+        teacherRepo.delete(id);
+        existing.ifPresent(t -> ActivityLogger.log("Schule", "Lehrer gelöscht: " + t.getFirstName() + " " + t.getLastName(), null));
+    }
+
     public Optional<ClassGroup> loadClass(long id) throws SQLException {
         return Optional.ofNullable(classRepo.findById(id));
     }

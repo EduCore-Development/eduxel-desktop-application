@@ -617,7 +617,7 @@ public class SearchViewController {
         Optional<ButtonType> result = confirm.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                // TODO: Implement deleteTeacher in SchoolService
+                schoolService.deleteTeacher(selected.getId());
                 FxUtils.showInfo("Gelöscht", "Lehrer wurde gelöscht.");
                 performSearch();
             } catch (Exception e) {
