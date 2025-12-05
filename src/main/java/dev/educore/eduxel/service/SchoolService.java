@@ -116,6 +116,7 @@ public class SchoolService {
         existing.ifPresent(t -> ActivityLogger.log("Schule", "Lehrer gelöscht: " + t.getFirstName() + " " + t.getLastName(), null));
     }
 
+    // Neu: Klasse laden (für Detail-/Bearbeiten-Dialoge)
     public Optional<ClassGroup> loadClass(long id) throws SQLException {
         return Optional.ofNullable(classRepo.findById(id));
     }
