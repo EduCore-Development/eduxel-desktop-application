@@ -15,6 +15,9 @@ import dev.educore.eduxel.ui.school.TeacherDetailController;
 import dev.educore.eduxel.ui.school.ClassDetailController;
 import dev.educore.eduxel.domain.school.ClassGroup;
 import dev.educore.eduxel.persistence.school.TeacherRepository;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -29,6 +32,9 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,6 +52,9 @@ public class MainWindowController {
     private Label versionLabel;
 
     @FXML
+    private VBox navDashboardButton;
+
+    @FXML
     private VBox navSchoolButton;
 
     @FXML
@@ -58,7 +67,7 @@ public class MainWindowController {
     private VBox navSettingsButton;
 
     @FXML
-    private VBox navActivitiesButton;
+    private VBox navWebDashboardButton;
 
     @FXML
     private TableView<ActivityEntry> activityTable;
@@ -87,13 +96,40 @@ public class MainWindowController {
             statusLabel.setText("Alle Systeme aktiv");
         }
 
-        if (activityTable != null) {
-            setupActivityTable();
-            // actual activities will be loaded on onAppReady()
-        }
-        // Default: show Settings view in center
-        NavigationManager.showSettings();
-        setNavSelected(navSettingsButton);
+        // add smooth hover/press animation to all nav items we have
+
+        // Dashboard will be shown in onAppReady() to ensure DB is bootstrapped first
+    }
+
+    private void addNavHoverEffect(VBox box) {
+        if (box == null) return;
+        // Use Timeline for smooth transitions on hover and press
+        final DropShadow hoverShadow = new DropShadow(8, Color.rgb(0,0,0,0.08));
+        hoverShadow.setOffsetY(1);
+
+        final Timeline enter = new Timeline(
+                new KeyFrame(Duration.millis(180),
+                        new KeyValue(box.scaleXProperty(), 1.01),
+                        new KeyValue(box.scaleYProperty(), 1.01)
+                )
+        );
+        final Timeline exit = new Timeline(
+                new KeyFrame(Duration.millis(180),
+                        new KeyValue(box.scaleXProperty(), 1.0),
+                        new KeyValue(box.scaleYProperty(), 1.0)
+                )
+        );
+
+        box.setOnMouseEntered(e -> {
+            enter.playFromStart();
+            box.setEffect(hoverShadow);
+        });
+        box.setOnMouseExited(e -> {
+            exit.playFromStart();
+            box.setEffect(null);
+        });
+        box.setOnMousePressed(e -> box.setScaleX(0.995));
+        box.setOnMouseReleased(e -> box.setScaleX(1.01));
     }
 
     private void setupActivityTable() {
@@ -132,6 +168,9 @@ public class MainWindowController {
     }
 
     private void setNavSelected(VBox selected) {
+        if (navDashboardButton != null) {
+            navDashboardButton.getStyleClass().remove("nav-item-selected");
+        }
         if (navSchoolButton != null) {
             navSchoolButton.getStyleClass().remove("nav-item-selected");
         }
@@ -144,8 +183,8 @@ public class MainWindowController {
         if (navSettingsButton != null) {
             navSettingsButton.getStyleClass().remove("nav-item-selected");
         }
-        if (navActivitiesButton != null) {
-            navActivitiesButton.getStyleClass().remove("nav-item-selected");
+        if (navWebDashboardButton != null) {
+            navWebDashboardButton.getStyleClass().remove("nav-item-selected");
         }
         if (selected != null && !selected.getStyleClass().contains("nav-item-selected")) {
             selected.getStyleClass().add("nav-item-selected");
@@ -166,8 +205,10 @@ public class MainWindowController {
         try {
             SchemaBootstrapper.bootstrap();
             // Load default activities
-            refreshActivities();
+            // refreshActivities(); // Not needed here anymore, Dashboard handles it
             ActivityLogger.log("System", "App gestartet", EduxelMeta.APP_NAME);
+            NavigationManager.showDashboard();
+            setNavSelected(navDashboardButton);
         } catch (Exception e) {
             FxUtils.showError("Datenbank-Initialisierung fehlgeschlagen",
                     "Bitte Verbindung prüfen (Server-IP/Port/Secret).", e);
@@ -181,24 +222,32 @@ public class MainWindowController {
     private boolean promptConfigureBroker(ClientConfig cfg) { return false; }
 
     private void refreshActivities() {
+        // Handled by Dashboard now
+    }
+
+    private boolean checkConnection() {
         try {
-            ReportingService svc = new ReportingService();
-            List<ActivityEntry> latest = svc.listRecentActivities(100);
-            activities.setAll(latest);
+            dev.educore.eduxel.persistence.DataSourceProvider.getConnection().close();
+            return true;
         } catch (Exception e) {
-            // fallback to demo
-            seedDemoActivities();
+            FxUtils.showError("Keine Verbindung",
+                    "Es konnte keine Verbindung zum Eduxel-Server hergestellt werden.\n" +
+                    "Bitte prüfen Sie die Einstellungen.", e);
+            onNavSettingsClicked();
+            return false;
         }
     }
 
     @FXML
-    private void onNavActivitiesClicked() {
-        setNavSelected(navActivitiesButton);
-        refreshActivities();
+    private void onNavDashboardClicked() {
+        if (!checkConnection()) return;
+        setNavSelected(navDashboardButton);
+        NavigationManager.showDashboard();
     }
 
     @FXML
     private void onNavSchoolClicked() {
+        if (!checkConnection()) return;
         setNavSelected(navSchoolButton);
         try {
             NavigationManager.showSchoolDatabaseOverview();
@@ -210,6 +259,7 @@ public class MainWindowController {
 
     @FXML
     private void onNavInventoryClicked() {
+        if (!checkConnection()) return;
         setNavSelected(navInventoryButton);
         NavigationManager.showInventoryOverview();
         addActivity("Inventar", "Inventarübersicht geöffnet", "Emin");
@@ -217,9 +267,18 @@ public class MainWindowController {
 
     @FXML
     private void onNavSearchClicked() {
+        if (!checkConnection()) return;
         setNavSelected(navSearchButton);
         NavigationManager.showSearch();
         addActivity("Suche", "Globale Suche geöffnet", "Emin");
+    }
+
+    @FXML
+    private void onNavWebDashboardClicked() {
+        if (!checkConnection()) return;
+        setNavSelected(navWebDashboardButton);
+        NavigationManager.showWebDashboard();
+        addActivity("Web", "Web Dashboard geöffnet", "Emin");
     }
 
     @FXML
@@ -244,6 +303,7 @@ public class MainWindowController {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(pane);
             dialog.setTitle("Neuen Schüler anlegen");
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.setResultConverter(bt -> bt);
             var result = dialog.showAndWait();
@@ -271,6 +331,7 @@ public class MainWindowController {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(pane);
             dialog.setTitle("Neuen Lehrer anlegen");
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.setResultConverter(bt -> bt);
             var result = dialog.showAndWait();
@@ -298,6 +359,7 @@ public class MainWindowController {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(pane);
             dialog.setTitle("Neue Klasse anlegen");
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.setResultConverter(bt -> bt);
             var result = dialog.showAndWait();
@@ -350,5 +412,3 @@ public class MainWindowController {
         }
     }
 }
-
-

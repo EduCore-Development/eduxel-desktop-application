@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" stylesheets="@main-theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.educore.eduxel.ui.main.DashboardController">
+    <VBox spacing="30" styleClass="content-area">
+        <padding>
+            <Insets bottom="40" left="40" right="40" top="40" />
+        </padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <VBox spacing="5">
+                <Label styleClass="activity-title" text="Eduxel Schul-Dashboard">
+                    <font>
+                        <Font name="System Bold" size="28.0" />
+                    </font>
+                </Label>
+                <Label text="Willkommen zurück! Hier ist der aktuelle Status Ihrer Schule." styleClass="app-subtitle" />
+            </VBox>
+            <Pane HBox.hgrow="ALWAYS" />
+            <Button onAction="#refresh" styleClass="pill-button" text="Aktualisieren">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2r-refresh" iconSize="16" iconColor="#4f46e5" />
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- Stat-Karten -->
+        <GridPane hgap="20" vgap="20">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3" />
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3" />
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="33.3" />
+            </columnConstraints>
+
+            <VBox spacing="12" styleClass="activity-card" GridPane.columnIndex="0">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <StackPane style="-fx-background-color: #eef2ff; -fx-background-radius: 12; -fx-padding: 10;">
+                        <FontIcon iconLiteral="mdi2a-account-group" iconSize="24" iconColor="#4f46e5" />
+                    </StackPane>
+                    <Label styleClass="quick-subtitle" text="Schüler gesamt" />
+                </HBox>
+                <Label fx:id="studentCountLabel" styleClass="activity-title" text="0">
+                    <font><Font name="System Bold" size="32"/></font>
+                </Label>
+            </VBox>
+
+            <VBox spacing="12" styleClass="activity-card" GridPane.columnIndex="1">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <StackPane style="-fx-background-color: #f0fdf4; -fx-background-radius: 12; -fx-padding: 10;">
+                        <FontIcon iconLiteral="mdi2s-school" iconSize="24" iconColor="#16a34a" />
+                    </StackPane>
+                    <Label styleClass="quick-subtitle" text="Lehrkräfte" />
+                </HBox>
+                <Label fx:id="teacherCountLabel" styleClass="activity-title" text="0">
+                    <font><Font name="System Bold" size="32"/></font>
+                </Label>
+            </VBox>
+
+            <VBox spacing="12" styleClass="activity-card" GridPane.columnIndex="2">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <StackPane style="-fx-background-color: #fff7ed; -fx-background-radius: 12; -fx-padding: 10;">
+                        <FontIcon iconLiteral="mdi2g-google-classroom" iconSize="24" iconColor="#ea580c" />
+                    </StackPane>
+                    <Label styleClass="quick-subtitle" text="Klassen" />
+                </HBox>
+                <Label fx:id="classCountLabel" styleClass="activity-title" text="0">
+                    <font><Font name="System Bold" size="32"/></font>
+                </Label>
+            </VBox>
+
+            <VBox spacing="12" styleClass="activity-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <StackPane style="-fx-background-color: #fdf2f8; -fx-background-radius: 12; -fx-padding: 10;">
+                        <FontIcon iconLiteral="mdi2l-laptop" iconSize="24" iconColor="#db2777" />
+                    </StackPane>
+                    <Label styleClass="quick-subtitle" text="Inventar-Geräte" />
+                </HBox>
+                <Label fx:id="deviceCountLabel" styleClass="activity-title" text="0">
+                    <font><Font name="System Bold" size="32"/></font>
+                </Label>
+            </VBox>
+
+            <VBox spacing="12" styleClass="activity-card" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-border-color: rgba(234, 179, 8, 0.3); -fx-border-width: 0 0 4 0;">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <StackPane style="-fx-background-color: #fefce8; -fx-background-radius: 12; -fx-padding: 10;">
+                        <FontIcon iconLiteral="mdi2e-emoticon-sick" iconSize="24" iconColor="#ca8a04" />
+                    </StackPane>
+                    <Label styleClass="quick-subtitle" text="Aktuell krankgemeldet" />
+                </HBox>
+                <Label fx:id="sickCountLabel" styleClass="activity-title" text="0" style="-fx-text-fill: #ca8a04;">
+                    <font><Font name="System Bold" size="32"/></font>
+                </Label>
+            </VBox>
+
+            <VBox spacing="12" styleClass="activity-card" GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-border-color: rgba(220, 38, 38, 0.3); -fx-border-width: 0 0 4 0;">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <StackPane style="-fx-background-color: #fef2f2; -fx-background-radius: 12; -fx-padding: 10;">
+                        <FontIcon iconLiteral="mdi2a-account-alert" iconSize="24" iconColor="#dc2626" />
+                    </StackPane>
+                    <Label styleClass="quick-subtitle" text="Unentschuldigt fehlend" />
+                </HBox>
+                <Label fx:id="missingCountLabel" styleClass="activity-title" text="0" style="-fx-text-fill: #dc2626;">
+                    <font><Font name="System Bold" size="32"/></font>
+                </Label>
+            </VBox>
+        </GridPane>
+
+        <!-- Aktivitäten -->
+        <VBox spacing="15" VBox.vgrow="ALWAYS" styleClass="activity-card">
+            <Label styleClass="activity-title" text="Aktuelle System-Aktivitäten" />
+            <TableView fx:id="activityTable" minHeight="350" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="timeCol" prefWidth="150" text="Zeitpunkt" />
+                    <TableColumn fx:id="areaCol" prefWidth="120" text="Bereich" />
+                    <TableColumn fx:id="actionCol" prefWidth="300" text="Aktion" />
+                    <TableColumn fx:id="userCol" prefWidth="120" text="Benutzer" />
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+            </TableView>
+        </VBox>
+    </VBox>
+</ScrollPane>

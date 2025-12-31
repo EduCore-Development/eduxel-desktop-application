@@ -183,4 +183,14 @@ public class TeacherRepository {
             ps.executeUpdate();
         }
     }
+
+    public int countAll() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM teachers";
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        }
+        return 0;
+    }
 }

@@ -143,6 +143,15 @@
                                     <TextArea fx:id="txtNotes" promptText="Besondere Hinweise, Allergien, Abholberechtigungen..." prefRowCount="4"/>
                                 </content>
                             </TitledPane>
+
+                            <TitledPane text="Dashboard Status" expanded="true">
+                                <content>
+                                    <VBox spacing="10">
+                                        <CheckBox fx:id="chkIsSick" text="Schüler ist aktuell krankgemeldet"/>
+                                        <CheckBox fx:id="chkIsMissingUnexcused" text="Schüler fehlt aktuell unentschuldigt"/>
+                                    </VBox>
+                                </content>
+                            </TitledPane>
                         </VBox>
                     </HBox>
                 </VBox>

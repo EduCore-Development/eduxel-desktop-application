@@ -4,159 +4,155 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="dev.educore.eduxel.ui.school.SearchViewController"
-      stylesheets="@../main/main-theme.css"
-      spacing="18"
-      styleClass="content-area">
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" stylesheets="@../main/main-theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.educore.eduxel.ui.school.SearchViewController">
+    <content>
+        <VBox spacing="18" styleClass="content-area">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
 
-    <padding>
-        <Insets topRightBottomLeft="18"/>
-    </padding>
+            <!-- Header Card -->
+            <VBox spacing="16" styleClass="activity-card">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="🔍 Globale Suche" styleClass="activity-title"/>
+                    <Label text="Durchsuchen Sie Schüler, Lehrer und Klassen" styleClass="activity-subtitle"/>
+                </HBox>
 
-    <!-- Header Card -->
-    <VBox spacing="16" styleClass="activity-card">
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label text="🔍 Globale Suche" styleClass="activity-title"/>
-            <Label text="Durchsuchen Sie Schüler, Lehrer und Klassen" styleClass="activity-subtitle"/>
-        </HBox>
+                <!-- Suchleiste -->
+                <VBox spacing="8">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="searchField"
+                                  promptText="Name, Klasse, Email, Notizen eingeben..."
+                                  HBox.hgrow="ALWAYS"
+                                  prefHeight="38"
+                                  style="-fx-background-color: #f9fafb; -fx-background-radius: 12; -fx-border-color: rgba(17,24,39,0.08); -fx-border-radius: 12; -fx-border-width: 1; -fx-padding: 8 14 8 14; -fx-font-size: 13;"/>
+                        <Button fx:id="btnClear"
+                               text="Zurücksetzen"
+                               onAction="#onClear"
+                               styleClass="quick-button-secondary"
+                               prefHeight="38"/>
+                    </HBox>
+                </VBox>
 
-        <!-- Suchleiste -->
-        <VBox spacing="8">
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <TextField fx:id="searchField"
-                          promptText="Name, Klasse, Email, Notizen eingeben..."
-                          HBox.hgrow="ALWAYS"
-                          prefHeight="38"
-                          style="-fx-background-color: #f9fafb; -fx-background-radius: 12; -fx-border-color: rgba(17,24,39,0.08); -fx-border-radius: 12; -fx-border-width: 1; -fx-padding: 8 14 8 14; -fx-font-size: 13;"/>
-                <Button fx:id="btnClear"
-                       text="Zurücksetzen"
-                       onAction="#onClear"
-                       styleClass="quick-button-secondary"
-                       prefHeight="38"/>
-            </HBox>
+                <!-- Filter-Leiste -->
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Label text="Filter:" styleClass="quick-subtitle" style="-fx-min-width: 50;"/>
+                    <ComboBox fx:id="filterClassCombo"
+                             promptText="Klasse..."
+                             prefWidth="160"
+                             prefHeight="36"
+                             onAction="#onFilterChanged"
+                             style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: rgba(17,24,39,0.08); -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    <ComboBox fx:id="filterGradeCombo"
+                             promptText="Jahrgang..."
+                             prefWidth="130"
+                             prefHeight="36"
+                             onAction="#onFilterChanged"
+                             style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: rgba(17,24,39,0.08); -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    <ComboBox fx:id="filterSubjectCombo"
+                             promptText="Fach..."
+                             prefWidth="150"
+                             prefHeight="36"
+                             onAction="#onFilterChanged"
+                             style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: rgba(17,24,39,0.08); -fx-border-radius: 10; -fx-border-width: 1;"/>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="resultCountLabel"
+                          text="0 Ergebnisse"
+                          styleClass="quick-status-label"/>
+                </HBox>
+            </VBox>
+
+            <!-- Tabs für Ergebnisse -->
+            <TabPane fx:id="resultsTabPane"
+                    tabClosingPolicy="UNAVAILABLE"
+                    VBox.vgrow="ALWAYS"
+                    style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-tab-min-height: 40; -fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;">
+
+                <!-- Schüler Tab -->
+                <Tab text="👨‍🎓 Schüler" style="-fx-background-color: transparent;">
+                    <VBox spacing="12" styleClass="activity-card" VBox.vgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+                            <Label fx:id="studentCountLabel" text="0 Schüler gefunden" styleClass="activity-subtitle"/>
+                            <Pane HBox.hgrow="ALWAYS"/>
+                            <Button text="Anzeigen"
+                                   onAction="#onViewSelectedStudent"
+                                   styleClass="quick-button-secondary"
+                                   prefHeight="32"/>
+                        </HBox>
+
+                        <TableView fx:id="studentTable"
+                                  VBox.vgrow="ALWAYS"
+                                  styleClass="table-view">
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+                            <columns>
+                                <TableColumn fx:id="colStudentName" text="Name" minWidth="180" prefWidth="200"/>
+                                <TableColumn fx:id="colStudentClass" text="Klasse" minWidth="100" prefWidth="120"/>
+                                <TableColumn fx:id="colStudentEmail" text="E-Mail" minWidth="160" prefWidth="200"/>
+                                <TableColumn fx:id="colStudentCity" text="Stadt" minWidth="120" prefWidth="140"/>
+                                <TableColumn fx:id="colStudentNotes" text="Notizen" minWidth="180" prefWidth="250"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </Tab>
+
+                <!-- Lehrer Tab -->
+                <Tab text="👨‍🏫 Lehrer">
+                    <VBox spacing="12" styleClass="activity-card" VBox.vgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+                            <Label fx:id="teacherCountLabel" text="0 Lehrer gefunden" styleClass="activity-subtitle"/>
+                            <Pane HBox.hgrow="ALWAYS"/>
+                            <Button text="Anzeigen"
+                                   onAction="#onViewSelectedTeacher"
+                                   styleClass="quick-button-secondary"
+                                   prefHeight="32"/>
+                        </HBox>
+
+                        <TableView fx:id="teacherTable"
+                                  VBox.vgrow="ALWAYS"
+                                  styleClass="table-view">
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+                            <columns>
+                                <TableColumn fx:id="colTeacherName" text="Name" minWidth="180" prefWidth="220"/>
+                                <TableColumn fx:id="colTeacherSubject" text="Fach" minWidth="140" prefWidth="180"/>
+                                <TableColumn fx:id="colTeacherEmail" text="E-Mail" minWidth="180" prefWidth="220"/>
+                                <TableColumn fx:id="colTeacherPhone" text="Telefon" minWidth="140" prefWidth="160"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </Tab>
+
+                <!-- Klassen Tab -->
+                <Tab text="📚 Klassen">
+                    <VBox spacing="12" styleClass="activity-card" VBox.vgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+                            <Label fx:id="classCountLabel" text="0 Klassen gefunden" styleClass="activity-subtitle"/>
+                            <Pane HBox.hgrow="ALWAYS"/>
+                            <Button text="Anzeigen"
+                                   onAction="#onViewSelectedClass"
+                                   styleClass="quick-button-secondary"
+                                   prefHeight="32"/>
+                        </HBox>
+
+                        <TableView fx:id="classTable"
+                                  VBox.vgrow="ALWAYS"
+                                  styleClass="table-view">
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+                            <columns>
+                                <TableColumn fx:id="colClassName" text="Klassenname" minWidth="150" prefWidth="180"/>
+                                <TableColumn fx:id="colClassGrade" text="Jahrgang" minWidth="100" prefWidth="120"/>
+                                <TableColumn fx:id="colClassType" text="Schultyp" minWidth="140" prefWidth="180"/>
+                                <TableColumn fx:id="colClassRoom" text="Raum" minWidth="120" prefWidth="140"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </Tab>
+            </TabPane>
         </VBox>
-
-        <!-- Filter-Leiste -->
-        <HBox spacing="12" alignment="CENTER_LEFT">
-            <Label text="Filter:" styleClass="quick-subtitle" style="-fx-min-width: 50;"/>
-            <ComboBox fx:id="filterClassCombo"
-                     promptText="Klasse..."
-                     prefWidth="160"
-                     prefHeight="36"
-                     onAction="#onFilterChanged"
-                     style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: rgba(17,24,39,0.08); -fx-border-radius: 10; -fx-border-width: 1;"/>
-            <ComboBox fx:id="filterGradeCombo"
-                     promptText="Jahrgang..."
-                     prefWidth="130"
-                     prefHeight="36"
-                     onAction="#onFilterChanged"
-                     style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: rgba(17,24,39,0.08); -fx-border-radius: 10; -fx-border-width: 1;"/>
-            <ComboBox fx:id="filterSubjectCombo"
-                     promptText="Fach..."
-                     prefWidth="150"
-                     prefHeight="36"
-                     onAction="#onFilterChanged"
-                     style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: rgba(17,24,39,0.08); -fx-border-radius: 10; -fx-border-width: 1;"/>
-            <Pane HBox.hgrow="ALWAYS"/>
-            <Label fx:id="resultCountLabel"
-                  text="0 Ergebnisse"
-                  styleClass="quick-status-label"/>
-        </HBox>
-    </VBox>
-
-    <!-- Tabs für Ergebnisse -->
-    <TabPane fx:id="resultsTabPane"
-            tabClosingPolicy="UNAVAILABLE"
-            VBox.vgrow="ALWAYS"
-            style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-tab-min-height: 40; -fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;">
-
-        <!-- Schüler Tab -->
-        <Tab text="👨‍🎓 Schüler" style="-fx-background-color: transparent;">
-            <VBox spacing="12" styleClass="activity-card" VBox.vgrow="ALWAYS">
-                <HBox alignment="CENTER_LEFT" spacing="12">
-                    <Label fx:id="studentCountLabel" text="0 Schüler gefunden" styleClass="activity-subtitle"/>
-                    <Pane HBox.hgrow="ALWAYS"/>
-                    <Button text="Anzeigen"
-                           onAction="#onViewSelectedStudent"
-                           styleClass="quick-button-secondary"
-                           prefHeight="32"/>
-                </HBox>
-
-                <TableView fx:id="studentTable"
-                          VBox.vgrow="ALWAYS"
-                          styleClass="table-view">
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                    </columnResizePolicy>
-                    <columns>
-                        <TableColumn fx:id="colStudentName" text="Name" minWidth="180" prefWidth="200"/>
-                        <TableColumn fx:id="colStudentClass" text="Klasse" minWidth="100" prefWidth="120"/>
-                        <TableColumn fx:id="colStudentEmail" text="E-Mail" minWidth="160" prefWidth="200"/>
-                        <TableColumn fx:id="colStudentCity" text="Stadt" minWidth="120" prefWidth="140"/>
-                        <TableColumn fx:id="colStudentNotes" text="Notizen" minWidth="180" prefWidth="250"/>
-                    </columns>
-                </TableView>
-            </VBox>
-        </Tab>
-
-        <!-- Lehrer Tab -->
-        <Tab text="👨‍🏫 Lehrer">
-            <VBox spacing="12" styleClass="activity-card" VBox.vgrow="ALWAYS">
-                <HBox alignment="CENTER_LEFT" spacing="12">
-                    <Label fx:id="teacherCountLabel" text="0 Lehrer gefunden" styleClass="activity-subtitle"/>
-                    <Pane HBox.hgrow="ALWAYS"/>
-                    <Button text="Anzeigen"
-                           onAction="#onViewSelectedTeacher"
-                           styleClass="quick-button-secondary"
-                           prefHeight="32"/>
-                </HBox>
-
-                <TableView fx:id="teacherTable"
-                          VBox.vgrow="ALWAYS"
-                          styleClass="table-view">
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                    </columnResizePolicy>
-                    <columns>
-                        <TableColumn fx:id="colTeacherName" text="Name" minWidth="180" prefWidth="220"/>
-                        <TableColumn fx:id="colTeacherSubject" text="Fach" minWidth="140" prefWidth="180"/>
-                        <TableColumn fx:id="colTeacherEmail" text="E-Mail" minWidth="180" prefWidth="220"/>
-                        <TableColumn fx:id="colTeacherPhone" text="Telefon" minWidth="140" prefWidth="160"/>
-                    </columns>
-                </TableView>
-            </VBox>
-        </Tab>
-
-        <!-- Klassen Tab -->
-        <Tab text="📚 Klassen">
-            <VBox spacing="12" styleClass="activity-card" VBox.vgrow="ALWAYS">
-                <HBox alignment="CENTER_LEFT" spacing="12">
-                    <Label fx:id="classCountLabel" text="0 Klassen gefunden" styleClass="activity-subtitle"/>
-                    <Pane HBox.hgrow="ALWAYS"/>
-                    <Button text="Anzeigen"
-                           onAction="#onViewSelectedClass"
-                           styleClass="quick-button-secondary"
-                           prefHeight="32"/>
-                </HBox>
-
-                <TableView fx:id="classTable"
-                          VBox.vgrow="ALWAYS"
-                          styleClass="table-view">
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                    </columnResizePolicy>
-                    <columns>
-                        <TableColumn fx:id="colClassName" text="Klassenname" minWidth="150" prefWidth="180"/>
-                        <TableColumn fx:id="colClassGrade" text="Jahrgang" minWidth="100" prefWidth="120"/>
-                        <TableColumn fx:id="colClassType" text="Schultyp" minWidth="140" prefWidth="180"/>
-                        <TableColumn fx:id="colClassRoom" text="Raum" minWidth="120" prefWidth="140"/>
-                    </columns>
-                </TableView>
-            </VBox>
-        </Tab>
-    </TabPane>
-
-</VBox>
-
+    </content>
+</ScrollPane>

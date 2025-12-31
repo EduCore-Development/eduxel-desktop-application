@@ -310,19 +310,13 @@ public class SchoolDatabaseOverviewController {
         StudentRow row = studentTable.getSelectionModel().getSelectedItem();
         if (row == null) return;
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Schüler löschen");
-        alert.setHeaderText("Schüler löschen");
-        alert.setContentText("Soll der Schüler '" + row.getFirstName() + " " + row.getLastName() + "' wirklich gelöscht werden?");
-        alert.getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
-
-        var result = alert.showAndWait();
-        if (result.isEmpty() || result.get() != ButtonType.OK) return;
-        try {
-            schoolService.deleteStudent(row.getId());
-            reloadStudents();
-        } catch (Exception ex) {
-            FxUtils.showError("Fehler beim Löschen des Schülers", null, ex);
+        if (FxUtils.showConfirmation("Schüler löschen", "Schüler löschen", "Soll der Schüler '" + row.getFirstName() + " " + row.getLastName() + "' wirklich gelöscht werden?")) {
+            try {
+                schoolService.deleteStudent(row.getId());
+                reloadStudents();
+            } catch (Exception ex) {
+                FxUtils.showError("Fehler beim Löschen des Schülers", null, ex);
+            }
         }
     }
 
@@ -343,6 +337,7 @@ public class SchoolDatabaseOverviewController {
             dialog.setDialogPane(pane);
             dialog.setTitle("Schüler bearbeiten");
             dialog.initModality(Modality.APPLICATION_MODAL);
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.setResultConverter(bt -> bt);
             var result = dialog.showAndWait();
@@ -369,6 +364,7 @@ public class SchoolDatabaseOverviewController {
             dialog.setDialogPane(pane);
             dialog.setTitle("Neuen Schüler anlegen");
             dialog.initModality(Modality.APPLICATION_MODAL);
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.setResultConverter(bt -> bt);
             var result = dialog.showAndWait();
@@ -410,6 +406,7 @@ public class SchoolDatabaseOverviewController {
             dialog.setDialogPane(pane);
             dialog.setTitle("Klasse bearbeiten");
             dialog.initModality(Modality.APPLICATION_MODAL);
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.setResultConverter(bt -> bt);
             var result = dialog.showAndWait();
@@ -436,21 +433,14 @@ public class SchoolDatabaseOverviewController {
         ClassItem item = classList.getSelectionModel().getSelectedItem();
         if (item == null || item == ALL_CLASSES) return;
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Klasse löschen");
-        alert.setHeaderText("Klasse löschen");
-        alert.setContentText("Soll die Klasse '" + item.name + "' wirklich gelöscht werden? Alle zugeordneten Schüler verlieren ihre Klassen-Zuordnung.");
-        alert.getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
-
-        var result = alert.showAndWait();
-        if (result.isEmpty() || result.get() != ButtonType.OK) return;
-
-        try {
-            schoolService.deleteClass(item.id);
-            loadClasses();
-            reloadStudents();
-        } catch (Exception e) {
-            FxUtils.showError("Fehler beim Löschen der Klasse", null, e);
+        if (FxUtils.showConfirmation("Klasse löschen", "Klasse löschen", "Soll die Klasse '" + item.name + "' wirklich gelöscht werden? Alle zugeordneten Schüler verlieren ihre Klassen-Zuordnung.")) {
+            try {
+                schoolService.deleteClass(item.id);
+                loadClasses();
+                reloadStudents();
+            } catch (Exception e) {
+                FxUtils.showError("Fehler beim Löschen der Klasse", null, e);
+            }
         }
     }
 
@@ -477,6 +467,7 @@ public class SchoolDatabaseOverviewController {
             dialog.setDialogPane(pane);
             dialog.setTitle("Schüler anzeigen");
             dialog.initModality(Modality.APPLICATION_MODAL);
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.showAndWait();
         } catch (Exception ex) {
@@ -509,6 +500,7 @@ public class SchoolDatabaseOverviewController {
             dialog.setDialogPane(pane);
             dialog.setTitle("Klasse anzeigen");
             dialog.initModality(Modality.APPLICATION_MODAL);
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.showAndWait();
         } catch (Exception e) {
@@ -539,6 +531,7 @@ public class SchoolDatabaseOverviewController {
             dialog.setDialogPane(pane);
             dialog.setTitle("Lehrer anzeigen");
             dialog.initModality(Modality.APPLICATION_MODAL);
+            FxUtils.applyCustomStyle(dialog);
 
             var result = dialog.showAndWait();
             if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
@@ -564,6 +557,7 @@ public class SchoolDatabaseOverviewController {
             dialog.setDialogPane(pane);
             dialog.setTitle("Neue Klasse anlegen");
             dialog.initModality(Modality.APPLICATION_MODAL);
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.setResultConverter(bt -> bt);
             var result = dialog.showAndWait();
@@ -599,6 +593,7 @@ public class SchoolDatabaseOverviewController {
             dialog.setDialogPane(pane);
             dialog.setTitle("Neuen Lehrer anlegen");
             dialog.initModality(Modality.APPLICATION_MODAL);
+            FxUtils.applyCustomStyle(dialog);
 
             dialog.setResultConverter(bt -> bt);
             var result = dialog.showAndWait();

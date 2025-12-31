@@ -5,6 +5,7 @@ import dev.educore.eduxel.meta.EduxelMeta;
 import dev.educore.eduxel.persistence.CredentialBrokerClient;
 import dev.educore.eduxel.persistence.DataSourceProvider;
 import dev.educore.eduxel.persistence.SchemaBootstrapper;
+import dev.educore.eduxel.ui.common.FxUtils;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -126,6 +127,7 @@ public class SettingsController {
             "Sie müssen sich danach neu anmelden."
         );
         confirm.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+        FxUtils.applyCustomStyle(confirm);
 
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
@@ -150,11 +152,7 @@ public class SettingsController {
             showOk("Erfolgreich ausgeloggt. Bitte neue Verbindung konfigurieren.");
 
             // Optional: Info-Dialog
-            Alert info = new Alert(Alert.AlertType.INFORMATION);
-            info.setTitle("Ausgeloggt");
-            info.setHeaderText("Sie wurden erfolgreich ausgeloggt");
-            info.setContentText("Bitte konfigurieren Sie eine neue Verbindung zum Server.");
-            info.showAndWait();
+            FxUtils.showInfo("Ausgeloggt", "Sie wurden erfolgreich ausgeloggt. Bitte konfigurieren Sie eine neue Verbindung zum Server.");
 
         } catch (Exception e) {
             showError("Fehler beim Ausloggen: " + optionalMessage(e));

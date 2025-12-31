@@ -19,6 +19,10 @@ public final class NavigationManager {
         setCenter("/dev/educore/eduxel/ui/school/student-overview.fxml");
     }
 
+    public static void showDashboard() {
+        setCenter("/dev/educore/eduxel/ui/main/dashboard.fxml");
+    }
+
     public static void showSchoolDatabaseOverview() {
         setCenter("/dev/educore/eduxel/ui/school/school-database-overview.fxml");
     }
@@ -33,6 +37,10 @@ public final class NavigationManager {
 
     public static void showSearch() {
         setCenter("/dev/educore/eduxel/ui/school/search-view.fxml");
+    }
+
+    public static void showWebDashboard() {
+        setCenter("/dev/educore/eduxel/ui/web/web-dashboard.fxml");
     }
 
     private static void setCenter(String fxmlPath) {

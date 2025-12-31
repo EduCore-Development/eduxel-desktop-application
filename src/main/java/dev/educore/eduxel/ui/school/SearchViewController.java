@@ -514,6 +514,7 @@ public class SearchViewController {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(pane);
             dialog.setTitle("Schüler bearbeiten");
+            FxUtils.applyCustomStyle(dialog);
 
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
@@ -534,13 +535,7 @@ public class SearchViewController {
             return;
         }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Schüler löschen");
-        confirm.setHeaderText("Möchten Sie diesen Schüler wirklich löschen?");
-        confirm.setContentText(selected.getFirstName() + " " + selected.getLastName());
-
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (FxUtils.showConfirmation("Schüler löschen", "Möchten Sie diesen Schüler wirklich löschen?", selected.getFirstName() + " " + selected.getLastName())) {
             try {
                 schoolService.deleteStudent(selected.getId());
                 FxUtils.showInfo("Gelöscht", "Schüler wurde gelöscht.");
@@ -587,6 +582,7 @@ public class SearchViewController {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(pane);
             dialog.setTitle("Lehrer bearbeiten");
+            FxUtils.applyCustomStyle(dialog);
 
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
@@ -609,13 +605,7 @@ public class SearchViewController {
             return;
         }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Lehrer löschen");
-        confirm.setHeaderText("Möchten Sie diesen Lehrer wirklich löschen?");
-        confirm.setContentText(selected.getFirstName() + " " + selected.getLastName());
-
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (FxUtils.showConfirmation("Lehrer löschen", "Möchten Sie diesen Lehrer wirklich löschen?", selected.getFirstName() + " " + selected.getLastName())) {
             try {
                 schoolService.deleteTeacher(selected.getId());
                 FxUtils.showInfo("Gelöscht", "Lehrer wurde gelöscht.");
@@ -661,6 +651,7 @@ public class SearchViewController {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(pane);
             dialog.setTitle("Klasse bearbeiten");
+            FxUtils.applyCustomStyle(dialog);
 
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
@@ -693,13 +684,7 @@ public class SearchViewController {
             return;
         }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Klasse löschen");
-        confirm.setHeaderText("Möchten Sie diese Klasse wirklich löschen?");
-        confirm.setContentText(selected.getName());
-
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (FxUtils.showConfirmation("Klasse löschen", "Möchten Sie diese Klasse wirklich löschen?", "Klasse: " + selected.getName())) {
             try {
                 schoolService.deleteClass(selected.getId());
                 FxUtils.showInfo("Gelöscht", "Klasse wurde gelöscht.");

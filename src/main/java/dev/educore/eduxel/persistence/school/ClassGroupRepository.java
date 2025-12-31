@@ -189,4 +189,14 @@ public class ClassGroupRepository {
         g.setTeacherId(tid == null ? null : ((Number) tid).longValue());
         return g;
     }
+
+    public int countAll() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM class_groups";
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        }
+        return 0;
+    }
 }

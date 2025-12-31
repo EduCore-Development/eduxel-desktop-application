@@ -45,8 +45,8 @@ public class StudentRepository {
                 "student_email, student_mobile, " +
                 "guardian1_name, guardian1_relation, guardian1_mobile, guardian1_work_phone, guardian1_email, " +
                 "guardian2_name, guardian2_relation, guardian2_mobile, guardian2_email, " +
-                "notes" +
-                ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                "notes, is_sick, is_missing_unexcused" +
+                ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try (Connection con = DataSourceProvider.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, DataEncryptionService.encryptNullable(s.getFirstName()));
@@ -72,6 +72,8 @@ public class StudentRepository {
             ps.setString(18, DataEncryptionService.encryptNullable(s.getGuardian2Email()));
 
             ps.setString(19, DataEncryptionService.encryptNullable(s.getNotes()));
+            ps.setBoolean(20, s.isSick());
+            ps.setBoolean(21, s.isMissingUnexcused());
 
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -88,7 +90,7 @@ public class StudentRepository {
                 "student_email = ?, student_mobile = ?, " +
                 "guardian1_name = ?, guardian1_relation = ?, guardian1_mobile = ?, guardian1_work_phone = ?, guardian1_email = ?, " +
                 "guardian2_name = ?, guardian2_relation = ?, guardian2_mobile = ?, guardian2_email = ?, " +
-                "notes = ? " +
+                "notes = ?, is_sick = ?, is_missing_unexcused = ? " +
                 "WHERE id = ?";
         try (Connection con = DataSourceProvider.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -115,7 +117,9 @@ public class StudentRepository {
             ps.setString(18, DataEncryptionService.encryptNullable(s.getGuardian2Email()));
 
             ps.setString(19, DataEncryptionService.encryptNullable(s.getNotes()));
-            ps.setLong(20, s.getId());
+            ps.setBoolean(20, s.isSick());
+            ps.setBoolean(21, s.isMissingUnexcused());
+            ps.setLong(22, s.getId());
             ps.executeUpdate();
         }
     }
@@ -126,7 +130,7 @@ public class StudentRepository {
                 "student_email, student_mobile, " +
                 "guardian1_name, guardian1_relation, guardian1_mobile, guardian1_work_phone, guardian1_email, " +
                 "guardian2_name, guardian2_relation, guardian2_mobile, guardian2_email, " +
-                "notes FROM students WHERE id = ?";
+                "notes, is_sick, is_missing_unexcused FROM students WHERE id = ?";
         try (Connection con = DataSourceProvider.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, id);
@@ -183,7 +187,7 @@ public class StudentRepository {
                 "student_email, student_mobile, " +
                 "guardian1_name, guardian1_relation, guardian1_mobile, guardian1_work_phone, guardian1_email, " +
                 "guardian2_name, guardian2_relation, guardian2_mobile, guardian2_email, " +
-                "notes FROM students WHERE 1=1"
+                "notes, is_sick, is_missing_unexcused FROM students WHERE 1=1"
         );
 
         if (filterClassId != null) {
@@ -260,6 +264,57 @@ public class StudentRepository {
         s.setGuardian2Mobile(DataEncryptionService.decryptNullable(rs.getString("guardian2_mobile")));
         s.setGuardian2Email(DataEncryptionService.decryptNullable(rs.getString("guardian2_email")));
         s.setNotes(DataEncryptionService.decryptNullable(rs.getString("notes")));
+        s.setSick(rs.getBoolean("is_sick"));
+        s.setMissingUnexcused(rs.getBoolean("is_missing_unexcused"));
         return s;
+    }
+
+    public int countAll() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM students";
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        }
+        return 0;
+    }
+
+    public int countSick() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM students WHERE is_sick = 1";
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        }
+        return 0;
+    }
+
+    public int countMissingUnexcused() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM students WHERE is_missing_unexcused = 1";
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        }
+        return 0;
+    }
+
+    public List<StudentItem> listAllItems() throws SQLException {
+        String sql = "SELECT id, first_name, last_name FROM students";
+        List<StudentItem> list = new ArrayList<>();
+        try (Connection con = DataSourceProvider.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String first = DataEncryptionService.decryptNullable(rs.getString("first_name"));
+                String last = DataEncryptionService.decryptNullable(rs.getString("last_name"));
+                list.add(new StudentItem(rs.getLong("id"), (last == null ? "" : last) + ", " + (first == null ? "" : first)));
+            }
+        }
+        return list;
+    }
+
+    public static record StudentItem(long id, String displayName) {
+        @Override public String toString() { return displayName; }
     }
 }

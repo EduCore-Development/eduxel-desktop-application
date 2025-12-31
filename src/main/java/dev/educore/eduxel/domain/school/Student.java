@@ -31,6 +31,9 @@ public class Student {
 
     private String notes;
 
+    private boolean isSick;
+    private boolean isMissingUnexcused;
+
     public Student() {
     }
 
@@ -93,4 +96,10 @@ public class Student {
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
+
+    public boolean isSick() { return isSick; }
+    public void setSick(boolean sick) { isSick = sick; }
+
+    public boolean isMissingUnexcused() { return isMissingUnexcused; }
+    public void setMissingUnexcused(boolean missingUnexcused) { isMissingUnexcused = missingUnexcused; }
 }

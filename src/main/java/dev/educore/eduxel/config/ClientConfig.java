@@ -13,10 +13,12 @@ public class ClientConfig {
     private static final String KEY_HOST = "broker.host";
     private static final String KEY_PORT = "broker.port";
     private static final String KEY_SECRET = "broker.secret.enc";
+    private static final String KEY_WEB_SECRET = "web.secret.enc";
 
     private String host;
     private int port;
     private String secretEncrypted;
+    private String webDashboardSecretEncrypted;
 
     public static ClientConfig load() {
         Preferences p = Preferences.userRoot().node(PREF_NODE);
@@ -24,6 +26,7 @@ public class ClientConfig {
         cfg.host = p.get(KEY_HOST, "");
         cfg.port = p.getInt(KEY_PORT, 0);
         cfg.secretEncrypted = p.get(KEY_SECRET, "");
+        cfg.webDashboardSecretEncrypted = p.get(KEY_WEB_SECRET, "");
         return cfg;
     }
 
@@ -32,6 +35,7 @@ public class ClientConfig {
         p.put(KEY_HOST, host == null ? "" : host);
         p.putInt(KEY_PORT, port);
         p.put(KEY_SECRET, secretEncrypted == null ? "" : secretEncrypted);
+        p.put(KEY_WEB_SECRET, webDashboardSecretEncrypted == null ? "" : webDashboardSecretEncrypted);
     }
 
     /**
@@ -81,5 +85,25 @@ public class ClientConfig {
 
     public String getSecretPlain() {
         return CryptoUtils.decryptFromBase64(secretEncrypted);
+    }
+
+    public String getWebDashboardSecretEncrypted() {
+        return webDashboardSecretEncrypted;
+    }
+
+    public void setWebDashboardSecretEncrypted(String webDashboardSecretEncrypted) {
+        this.webDashboardSecretEncrypted = webDashboardSecretEncrypted;
+    }
+
+    public boolean isWebDashboardConfigured() {
+        return webDashboardSecretEncrypted != null && !webDashboardSecretEncrypted.isBlank();
+    }
+
+    public void setWebDashboardSecretPlain(String secretPlain) {
+        this.webDashboardSecretEncrypted = CryptoUtils.encryptToBase64(secretPlain);
+    }
+
+    public String getWebDashboardSecretPlain() {
+        return CryptoUtils.decryptFromBase64(webDashboardSecretEncrypted);
     }
 }

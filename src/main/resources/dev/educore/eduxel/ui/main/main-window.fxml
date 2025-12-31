@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
@@ -41,17 +42,31 @@
     <left>
         <VBox spacing="12" styleClass="side-bar">
             <BorderPane.margin>
-                <Insets top="24.0" right="0.0" bottom="0.0" left="0.0"/>
+                <Insets top="12.0" right="0.0" bottom="0.0" left="0.0"/>
             </BorderPane.margin>
 
             <Label text="Bereiche" styleClass="side-title"/>
+
+            <VBox fx:id="navDashboardButton"
+                  onMouseClicked="#onNavDashboardClicked"
+                  styleClass="nav-item nav-item-dashboard">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
+                    <StackPane styleClass="nav-icon-wrapper">
+                        <FontIcon iconLiteral="mdi2v-view-dashboard" iconSize="20" styleClass="nav-icon"/>
+                    </StackPane>
+                    <VBox spacing="2">
+                        <Label text="Dashboard" styleClass="nav-label"/>
+                        <Label text="Status &amp; Statistiken" styleClass="nav-caption"/>
+                    </VBox>
+                </HBox>
+            </VBox>
 
             <VBox fx:id="navSchoolButton"
                   onMouseClicked="#onNavSchoolClicked"
                   styleClass="nav-item nav-item-school">
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
                     <StackPane styleClass="nav-icon-wrapper">
-                        <Label text="📚" styleClass="nav-icon-label"/>
+                        <FontIcon iconLiteral="mdi2s-school" iconSize="20" styleClass="nav-icon"/>
                     </StackPane>
                     <VBox spacing="2">
                         <Label text="Schuldatenbank" styleClass="nav-label"/>
@@ -64,8 +79,10 @@
             <VBox fx:id="navInventoryButton"
                   onMouseClicked="#onNavInventoryClicked"
                   styleClass="nav-item nav-item-inventory">
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="💻" styleClass="nav-icon-label"/>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
+                    <StackPane styleClass="nav-icon-wrapper">
+                        <FontIcon iconLiteral="mdi2l-laptop" iconSize="20" styleClass="nav-icon"/>
+                    </StackPane>
                     <VBox spacing="2">
                         <Label text="Inventar" styleClass="nav-label"/>
                         <Label text="Geräte, Zuweisungen" styleClass="nav-caption"/>
@@ -73,12 +90,27 @@
                 </HBox>
             </VBox>
 
+            <VBox fx:id="navWebDashboardButton"
+                  onMouseClicked="#onNavWebDashboardClicked"
+                  styleClass="nav-item nav-item-web">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
+                    <StackPane styleClass="nav-icon-wrapper">
+                        <FontIcon iconLiteral="mdi2v-view-dashboard" iconSize="20" styleClass="nav-icon"/>
+                    </StackPane>
+                    <VBox spacing="2">
+                        <Label text="Web Dashboard" styleClass="nav-label"/>
+                        <Label text="Online-Portal &amp; Accounts" styleClass="nav-caption"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+
             <VBox fx:id="navSearchButton"
                   onMouseClicked="#onNavSearchClicked"
                   styleClass="nav-item nav-item-search">
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
                     <StackPane styleClass="nav-icon-wrapper">
-                        <Label text="🔍" styleClass="nav-icon-label"/>
+                        <FontIcon iconLiteral="mdi2m-magnify" iconSize="20" styleClass="nav-icon"/>
                     </StackPane>
                     <VBox spacing="2">
                         <Label text="Suche" styleClass="nav-label"/>
@@ -89,10 +121,10 @@
 
             <VBox fx:id="navSettingsButton"
                   onMouseClicked="#onNavSettingsClicked"
-                  styleClass="nav-item nav-item-selected nav-item-secondary">
+                  styleClass="nav-item nav-item-settings">
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-inner">
                     <StackPane styleClass="nav-icon-wrapper">
-                        <Label text="⚙" styleClass="nav-icon-label"/>
+                        <FontIcon iconLiteral="mdi2c-cog" iconSize="20" styleClass="nav-icon"/>
                     </StackPane>
                     <VBox spacing="2">
                         <Label text="Einstellungen" styleClass="nav-label"/>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" stylesheets="@../main/main-theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.educore.eduxel.ui.web.WebDashboardController">
+    <VBox spacing="25" styleClass="content-area">
+        <padding>
+            <Insets bottom="40" left="40" right="40" top="40" />
+        </padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <VBox spacing="5">
+                <Label styleClass="activity-title" text="Web Dashboard Control Center">
+                    <font>
+                        <Font name="System Bold" size="26.0" />
+                    </font>
+                </Label>
+                <Label text="Verwalten Sie den Online-Zugang für Schüler, Lehrer und Eltern." styleClass="quick-hint" />
+            </VBox>
+            <Pane HBox.hgrow="ALWAYS" />
+            <Button onAction="#onOpenRepo" styleClass="pill-button" text="GitHub Repository ↗">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2g-github" iconSize="16" iconColor="#4f46e5" />
+                </graphic>
+            </Button>
+        </HBox>
+
+        <StackPane fx:id="mainStack">
+            <!-- Setup View -->
+            <VBox fx:id="setupBox" maxWidth="600" spacing="20" styleClass="activity-card" alignment="CENTER_LEFT">
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <StackPane style="-fx-background-color: #f3f4ff; -fx-background-radius: 12; -fx-padding: 12;">
+                        <FontIcon iconLiteral="mdi2s-shield-lock-outline" iconSize="32" iconColor="#4f46e5" />
+                    </StackPane>
+                    <VBox spacing="5">
+                        <Label styleClass="quick-title" text="Initiales Setup erforderlich" />
+                        <Label wrapText="true" text="Verbinden Sie Eduxel mit Ihrem Web Dashboard Secret." styleClass="quick-hint" />
+                    </VBox>
+                </HBox>
+                
+                <Separator />
+                
+                <Label wrapText="true" text="Das Web Dashboard ermöglicht den sicheren Zugriff auf Noten, Fehlzeiten und Hausaufgaben über den Browser. Geben Sie das bei der Installation generierte Secret ein." styleClass="app-subtitle" />
+                
+                <VBox spacing="10">
+                    <Label text="Web Dashboard Secret" styleClass="nav-label" />
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <PasswordField fx:id="secretField" promptText="Secret eingeben..." HBox.hgrow="ALWAYS" style="-fx-pref-height: 45;" />
+                        <Button onAction="#onSetup" text="Dashboard aktivieren" styleClass="quick-button-primary" style="-fx-pref-height: 45;" />
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- Dashboard View -->
+            <VBox fx:id="dashboardBox" spacing="30" visible="false">
+                <GridPane hgap="20" vgap="20">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="20" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="20" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="20" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="20" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="20" />
+                    </columnConstraints>
+
+                    <VBox styleClass="quick-card" GridPane.columnIndex="0" spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <FontIcon iconLiteral="mdi2a-account-group" iconSize="20" iconColor="#4f46e5" />
+                            <Label styleClass="quick-subtitle" text="Web Accounts" />
+                        </HBox>
+                        <Label fx:id="totalAccountsLabel" styleClass="activity-title" text="0" />
+                    </VBox>
+                    
+                    <VBox styleClass="quick-card" GridPane.columnIndex="1" spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <FontIcon iconLiteral="mdi2s-school" iconSize="20" iconColor="#10b981" />
+                            <Label styleClass="quick-subtitle" text="Lehrkräfte" />
+                        </HBox>
+                        <Label fx:id="totalTeachersLabel" styleClass="activity-title" text="0" />
+                    </VBox>
+
+                    <VBox styleClass="quick-card" GridPane.columnIndex="2" spacing="10" style="-fx-border-color: rgba(234, 179, 8, 0.2); -fx-border-width: 0 0 4 0;">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <FontIcon iconLiteral="mdi2e-emoticon-sick" iconSize="20" iconColor="#eab308" />
+                            <Label styleClass="quick-subtitle" text="Krankgemeldet" />
+                        </HBox>
+                        <Label fx:id="sickStudentsLabel" styleClass="activity-title" text="0" style="-fx-text-fill: #eab308;" />
+                    </VBox>
+
+                    <VBox styleClass="quick-card" GridPane.columnIndex="3" spacing="10" style="-fx-border-color: rgba(239, 68, 68, 0.2); -fx-border-width: 0 0 4 0;">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <FontIcon iconLiteral="mdi2a-account-alert" iconSize="20" iconColor="#ef4444" />
+                            <Label styleClass="quick-subtitle" text="Fehlend" />
+                        </HBox>
+                        <Label fx:id="missingStudentsLabel" styleClass="activity-title" text="0" style="-fx-text-fill: #ef4444;" />
+                    </VBox>
+
+                    <VBox styleClass="quick-card" GridPane.columnIndex="4" spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <FontIcon iconLiteral="mdi2g-google-classroom" iconSize="20" iconColor="#6366f1" />
+                            <Label styleClass="quick-subtitle" text="Klassen" />
+                        </HBox>
+                        <Label fx:id="totalClassesLabel" styleClass="activity-title" text="0" />
+                    </VBox>
+                </GridPane>
+
+                <VBox spacing="20" styleClass="activity-card">
+                    <HBox alignment="CENTER_LEFT" spacing="15">
+                        <StackPane style="-fx-background-color: #f3f4ff; -fx-background-radius: 10; -fx-padding: 10;">
+                             <FontIcon iconLiteral="mdi2a-account-plus" iconSize="24" iconColor="#4f46e5" />
+                        </StackPane>
+                        <VBox>
+                            <Label styleClass="quick-title" text="Neuen Account anlegen" />
+                            <Label text="Erstellen Sie Zugangsdaten für Personen aus der Schuldatenbank." styleClass="quick-hint" />
+                        </VBox>
+                    </HBox>
+                    
+                    <Separator />
+
+                    <GridPane hgap="25" vgap="20">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="150" />
+                            <ColumnConstraints hgrow="ALWAYS" />
+                            <ColumnConstraints minWidth="150" />
+                            <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
+
+                        <VBox spacing="8" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2">
+                            <Label text="Typ" styleClass="nav-label" />
+                            <ComboBox fx:id="userTypeCombo" promptText="Typ wählen" maxWidth="Infinity" style="-fx-pref-height: 40;" />
+                        </VBox>
+
+                        <VBox spacing="8" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.columnSpan="2">
+                            <Label text="Person aus Datenbank" styleClass="nav-label" />
+                            <ComboBox fx:id="personSelectionCombo" promptText="Person wählen" maxWidth="Infinity" style="-fx-pref-height: 40;" />
+                        </VBox>
+
+                        <VBox spacing="8" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2">
+                            <Label text="E-Mail Adresse" styleClass="nav-label" />
+                            <TextField fx:id="userEmailField" promptText="max@mustermann.de" style="-fx-pref-height: 40;" />
+                        </VBox>
+
+                        <VBox spacing="8" GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.columnSpan="2">
+                            <Label text="Passwort" styleClass="nav-label" />
+                            <HBox spacing="10">
+                                <TextField fx:id="passwordField" HBox.hgrow="ALWAYS" editable="false" promptText="Passwort generieren..." style="-fx-pref-height: 40;" />
+                                <Button onAction="#onGeneratePassword" styleClass="quick-button-secondary" style="-fx-pref-height: 40;">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdi2r-refresh" iconSize="16" iconColor="#4f46e5" />
+                                    </graphic>
+                                </Button>
+                            </HBox>
+                        </VBox>
+                    </GridPane>
+
+                    <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+                        <Button onAction="#onAssignParents" styleClass="quick-button-secondary" text="Eltern-Details verknüpfen" />
+                        <Button onAction="#onCreateAccount" styleClass="quick-button-primary" text="Web Account aktivieren">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi2c-check-decagram" iconSize="16" iconColor="white" />
+                            </graphic>
+                        </Button>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </StackPane>
+    </VBox>
+</ScrollPane>

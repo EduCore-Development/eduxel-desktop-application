@@ -41,6 +41,9 @@ public class StudentDetailController {
 
     @FXML private TextArea txtNotes;
 
+    @FXML private javafx.scene.control.CheckBox chkIsSick;
+    @FXML private javafx.scene.control.CheckBox chkIsMissingUnexcused;
+
     private final SchoolService schoolService = new SchoolService();
 
     private Student editingStudent;
@@ -149,6 +152,8 @@ public class StudentDetailController {
         txtGuardian2Email.setText(s.getGuardian2Email());
 
         txtNotes.setText(s.getNotes());
+        chkIsSick.setSelected(s.isSick());
+        chkIsMissingUnexcused.setSelected(s.isMissingUnexcused());
     }
 
     public Student buildResult() {
@@ -185,6 +190,8 @@ public class StudentDetailController {
         editingStudent.setGuardian2Email(txtGuardian2Email.getText());
 
         editingStudent.setNotes(txtNotes.getText());
+        editingStudent.setSick(chkIsSick.isSelected());
+        editingStudent.setMissingUnexcused(chkIsMissingUnexcused.isSelected());
 
         return editingStudent;
     }

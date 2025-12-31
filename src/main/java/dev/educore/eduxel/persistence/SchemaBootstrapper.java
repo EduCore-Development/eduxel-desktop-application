@@ -8,8 +8,10 @@ public final class SchemaBootstrapper {
     private SchemaBootstrapper() {}
 
     public static void bootstrap() throws SQLException {
+        System.out.println("[DB] Starte Datenbank-Bootstrapping...");
         try (Connection con = DataSourceProvider.getConnection(); Statement st = con.createStatement()) {
             // Basistabellen anlegen (idempotent)
+            System.out.println("[DB] Erstelle Basistabellen falls nicht vorhanden...");
             // 1. Lehrer (mit E-Mail und Telefon)
             // Größere VARCHAR-Längen, um Base64-ciphertexts bequem zu speichern
             st.addBatch("CREATE TABLE IF NOT EXISTS teachers (" +
@@ -56,7 +58,7 @@ public final class SchemaBootstrapper {
                     "notes MEDIUMTEXT NULL, " +
                     "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                     "INDEX idx_students_class(class_id), " +
-                    "INDEX idx_students_name(last_name, first_name), " +
+                    "INDEX idx_students_name(last_name(255), first_name(255)), " +
                     "CONSTRAINT fk_students_class FOREIGN KEY (class_id) REFERENCES class_groups(id) ON DELETE SET NULL) ");
 
             // 4. Geräte (FKs auf students/teachers)
@@ -92,22 +94,36 @@ public final class SchemaBootstrapper {
                     "user VARCHAR(120) NULL, " +
                     "INDEX idx_activity_time(time)) ");
 
+            // 7. Web Dashboard Accounts
+            st.addBatch("CREATE TABLE IF NOT EXISTS web_accounts (" +
+                    "id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
+                    "email VARCHAR(255) NOT NULL UNIQUE, " +
+                    "password_hash VARCHAR(512) NOT NULL, " +
+                    "type VARCHAR(32) NOT NULL, " +
+                    "reference_id BIGINT NULL, " +
+                    "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ");
+
             st.executeBatch();
+            System.out.println("[DB] Basisschema erfolgreich initialisiert.");
 
             // Schema-Migrationen (idempotente ALTER TABLEs)
             applyMigrations(con);
+            System.out.println("[DB] Bootstrapping abgeschlossen.");
         }
     }
 
     private static void applyMigrations(Connection con) {
+        System.out.println("[DB] Führe Migrationen durch...");
         try (Statement st = con.createStatement()) {
             // Lehrer: fehlende Spalten email/phone nachziehen, falls alte Tabellenstruktur vorhanden ist.
             // MySQL kennt "IF NOT EXISTS" für ADD COLUMN erst ab neueren Versionen; hier best-effort, Fehler werden ignoriert.
             try {
                 st.executeUpdate("ALTER TABLE teachers ADD COLUMN email VARCHAR(200) NULL");
+                System.out.println("[DB] Spalte 'teachers.email' hinzugefügt.");
             } catch (SQLException ignored) { }
             try {
                 st.executeUpdate("ALTER TABLE teachers ADD COLUMN phone VARCHAR(40) NULL");
+                System.out.println("[DB] Spalte 'teachers.phone' hinzugefügt.");
             } catch (SQLException ignored) { }
 
             // Spalten vergrößern, um verschlüsselte (Base64) Daten zu fassen (idempotent; Fehler ignorieren)
@@ -135,9 +151,26 @@ public final class SchemaBootstrapper {
             try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN guardian2_email VARCHAR(512) NULL"); } catch (SQLException ignored) {}
             try { st.executeUpdate("ALTER TABLE students MODIFY COLUMN notes MEDIUMTEXT NULL"); } catch (SQLException ignored) {}
 
-            // Weitere Migrationen für andere Tabellen könnten hier folgen (z. B. neue Schüler-Felder, Indizes, etc.)
-        } catch (SQLException ignored) {
-            // Wir wollen nicht, dass das UI durch Migrationsfehler unbenutzbar wird.
+            // Schüler: Status-Felder für Dashboard
+            try { 
+                st.executeUpdate("ALTER TABLE students ADD COLUMN is_sick BOOLEAN DEFAULT FALSE"); 
+                System.out.println("[DB] Spalte 'students.is_sick' hinzugefügt.");
+            } catch (SQLException ignored) {}
+            try { 
+                st.executeUpdate("ALTER TABLE students ADD COLUMN is_missing_unexcused BOOLEAN DEFAULT FALSE"); 
+                System.out.println("[DB] Spalte 'students.is_missing_unexcused' hinzugefügt.");
+            } catch (SQLException ignored) {}
+
+            // Index-Präfixe sicherstellen (Migration für bestehende Tabellen)
+            try {
+                st.executeUpdate("ALTER TABLE students DROP INDEX idx_students_name");
+                st.executeUpdate("ALTER TABLE students ADD INDEX idx_students_name(last_name(255), first_name(255))");
+                System.out.println("[DB] Index 'idx_students_name' mit Präfixen aktualisiert.");
+            } catch (SQLException ignored) {}
+
+            System.out.println("[DB] Migrationen erfolgreich geprüft.");
+        } catch (SQLException e) {
+            System.err.println("[DB] Fehler während der Migration: " + e.getMessage());
         }
     }
 }

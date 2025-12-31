@@ -45,8 +45,13 @@ public class EduxelApp extends Application {
             }
 
             stage.setScene(scene);
-            stage.setMinWidth(1100);
-            stage.setMinHeight(700);
+            stage.setMinWidth(950);
+            stage.setMinHeight(650);
+
+            // Initial size
+            stage.setWidth(1024);
+            stage.setHeight(720);
+            
             stage.show();
 
             MainWindowController controller = loader.getController();

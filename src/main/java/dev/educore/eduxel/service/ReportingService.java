@@ -6,6 +6,7 @@ import dev.educore.eduxel.ui.main.ActivityEntry;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -33,5 +34,48 @@ public class ReportingService {
             }
         }
         return list;
+    }
+
+    public Statistics getGlobalStatistics() throws Exception {
+        Statistics stats = new Statistics();
+        try (Connection con = DataSourceProvider.getConnection()) {
+            stats.studentCount = getCount(con, "students");
+            stats.teacherCount = getCount(con, "teachers");
+            stats.classCount = getCount(con, "class_groups");
+            stats.deviceCount = getCount(con, "devices");
+            stats.webAccountCount = getCount(con, "web_accounts");
+            
+            // Sick/Missing
+            try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM students WHERE is_sick = TRUE");
+                 ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) stats.sickStudentCount = rs.getInt(1);
+            }
+            try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM students WHERE is_missing_unexcused = TRUE");
+                 ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) stats.missingStudentCount = rs.getInt(1);
+            }
+        }
+        return stats;
+    }
+
+    private int getCount(Connection con, String table) throws Exception {
+        try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM " + table);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.err.println("[Reporting] Fehler beim Abrufen der Anzahl für Tabelle '" + table + "': " + e.getMessage());
+            throw e;
+        }
+        return 0;
+    }
+
+    public static class Statistics {
+        public int studentCount;
+        public int teacherCount;
+        public int classCount;
+        public int deviceCount;
+        public int webAccountCount;
+        public int sickStudentCount;
+        public int missingStudentCount;
     }
 }
